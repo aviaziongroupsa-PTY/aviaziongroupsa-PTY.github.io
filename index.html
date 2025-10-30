@@ -1,0 +1,151 @@
+<!--
+========================================================
+INSTRUCCIONES RÁPIDAS PARA EDITAR ESTA PÁGINA (AVIAZIÓN)
+========================================================
+
+📌 Logo:
+1. Sube el logo al repositorio con el nombre exacto: LOGO-AVIAZION.png
+2. Si cambias el nombre, también cámbialo en la línea <img src="LOGO-AVIAZION.png">
+
+📌 Enlaces:
+1. Ve a la sección <div class="links"> ... </div>.
+2. Copia y pega otra línea <a class="link" ...> para añadir más.
+3. Cambia el texto visible y la URL en href="...".
+
+📌 Colores:
+1. Cambia los valores dentro de :root:
+   --bg = fondo de la página
+   --accent = color de acento y footer (ahora es azul)
+
+📌 Footer:
+1. Cambia el correo de contacto dentro del <footer> (donde dice info@aviazion.com).
+
+📌 Publicar cambios:
+1. Sube el archivo modificado a GitHub (Add file → Upload files → Commit changes).
+2. Revisa https://TUUSUARIO.github.io después de 1-2 minutos.
+
+========================================================
+-->
+
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>AviaZión Group</title>
+
+  <style>
+    /* 🎨 COLORES PRINCIPALES — Puedes ajustar estos valores */
+    :root {
+      --bg: #ffffff;         /* Fondo (puedes usar #f8f9fa si quieres gris clarito tipo laats) */
+      --text: #1a1a1a;       /* Texto */
+      --accent: #0b5d9b;     /* Azul corporativo/acento footer */
+      --link-bg: #ffffff;    /* Fondo de cada botón */
+      --link-border: #dcdcdc;/* Borde de cada botón */
+    }
+
+    * { box-sizing: border-box; }
+    body {
+      margin: 0;
+      font-family: Arial, sans-serif;
+      background: var(--bg);
+      color: var(--text);
+      display: flex;
+      flex-direction: column;
+      min-height: 100vh; /* Footer siempre abajo */
+    }
+
+    .container {
+      flex: 1;
+      display: flex;
+      justify-content: center;
+      align-items: flex-start;
+      padding: 40px 20px;
+    }
+
+    .content {
+      max-width: 500px;
+      width: 100%;
+      text-align: center;
+    }
+
+    /* Ajusta el tamaño del logo aquí si lo quieres más grande */
+    .logo {
+      width: 200px;
+      margin-bottom: 40px;
+    }
+
+    .links {
+      display: grid;
+      gap: 16px; /* espacio entre los botones */
+    }
+
+    .link {
+      display: block;
+      padding: 14px 20px;
+      background: var(--link-bg);
+      border: 1px solid var(--link-border);
+      border-radius: 10px;
+      text-decoration: none;
+      color: var(--text);
+      font-weight: bold;
+      transition: all 0.2s ease-in-out;
+    }
+
+    .link:hover {
+      border-color: var(--accent);
+      transform: translateY(-2px);
+      box-shadow: 0 4px 8px rgba(0,0,0,0.08);
+    }
+
+    footer {
+      background: var(--accent);
+      color: white;
+      text-align: center;
+      padding: 15px;
+      font-size: 14px;
+    }
+
+    footer a {
+      color: white;
+      text-decoration: underline;
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <div class="content">
+
+      <!-- LOGO AVIAZIÓN -->
+      <!-- Asegúrate que el archivo en el repo se llame LOGO-AVIAZION.png -->
+      <img class="logo" src="LOGO-AVIAZION.png" alt="Logo AviaZión Group" />
+
+      <!-- ENLACES PRINCIPALES -->
+      <div class="links">
+        <a class="link" href="https://forms.gle/ijiT1BJGfjjQFtJV7" target="_blank">
+          Nuevo ingreso
+        </a>
+
+        <a class="link" href="https://forms.gle/Ene5f3w6ai9S7WQ79" target="_blank">
+          Consultas
+        </a>
+
+        <a class="link" href="https://forms.gle/hZZ6XULsPQpETFUaA" target="_blank">
+          Gastos reembolsables
+        </a>
+      </div>
+    </div>
+  </div>
+
+  <!-- FOOTER -->
+  <footer>
+    © <span id="year"></span> AviaZión Group |
+    <a href="mailto:info@aviazion.com">info@aviazion.com</a>
+  </footer>
+
+  <script>
+    // Año dinámico
+    document.getElementById("year").textContent = new Date().getFullYear();
+  </script>
+</body>
+</html>
