@@ -34,7 +34,7 @@
       "id": "gastos",
       "title": "Gastos Reembolsables",
       "description": "Registro de gastos para reembolso",
-      "icon": "receipt",
+      "icon": "dollar-sign",
       "url": "https://forms.gle/hZZ6XULsPQpETFUaA",
       "category": "Finanzas"
     },

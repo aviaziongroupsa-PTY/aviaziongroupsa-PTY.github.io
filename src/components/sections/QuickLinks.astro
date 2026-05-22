@@ -28,7 +28,7 @@ const icons: Record<string, string> = {
   'receipt-tax': `<svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="M9 14.25l6-6m4.5-3.493V21.75l-3.75-1.5-3.75 1.5-3.75-1.5-3.75 1.5V4.757c0-1.108.806-2.057 1.907-2.185a48.507 48.507 0 0 1 11.186 0c1.1.128 1.907 1.077 1.907 2.185ZM9.75 9h.008v.008H9.75V9Zm.375 0a.375.375 0 1 1-.75 0 .375.375 0 0 1 .75 0Zm4.125 4.5h.008v.008h-.008V13.5Zm.375 0a.375.375 0 1 1-.75 0 .375.375 0 0 1 .75 0Z" /></svg>`,
   'help-circle': `<svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="M9.879 7.519c1.171-1.025 3.071-1.025 4.242 0 1.172 1.025 1.172 2.687 0 3.712-.203.179-.43.326-.67.442-.745.361-1.45.999-1.45 1.827v.75M21 12a9 9 0 1 1-18 0 9 9 0 0 1 18 0Zm-9 5.25h.008v.008H12v-.008Z" /></svg>`,
   'person-document': `<svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="M15 9h3.75M15 12h3.75M15 15h3.75M4.5 19.5h15a2.25 2.25 0 0 0 2.25-2.25V6.75A2.25 2.25 0 0 0 19.5 4.5h-15a2.25 2.25 0 0 0-2.25 2.25v10.5A2.25 2.25 0 0 0 4.5 19.5Zm6-10.125a1.875 1.875 0 1 1-3.75 0 1.875 1.875 0 0 1 3.75 0Zm1.294 6.336a6.721 6.721 0 0 1-3.17.789 6.721 6.721 0 0 1-3.168-.789 3.376 3.376 0 0 1 6.338 0Z" /></svg>`,
-  'handshake': `<svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="M15.59 14.37a6 6 0 0 1-5.84 7.38v-4.8m5.84-2.58a14.98 14.98 0 0 0 6.16-12.12A14.98 14.98 0 0 0 9.631 8.41m5.96 5.96a14.926 14.926 0 0 1-5.841 2.58m-.119-8.54a6 6 0 0 0-7.381 5.84h4.8m2.581-5.84a14.927 14.927 0 0 0-2.58 5.84m2.699 2.7c-.103.021-.207.041-.311.06a15.09 15.09 0 0 1-2.448-2.448 14.9 14.9 0 0 1 .06-.312m-2.24 2.39a4.493 4.493 0 0 0-1.757 4.306 4.493 4.493 0 0 0 4.306-1.758M16.5 9a1.5 1.5 0 1 1-3 0 1.5 1.5 0 0 1 3 0Z" /></svg>`,
+  'handshake': `<svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="M15 19.128a9.38 9.38 0 0 0 2.625.372 9.337 9.337 0 0 0 4.121-.952 4.125 4.125 0 0 0-7.533-2.493M15 19.128v-.003c0-1.113-.285-2.16-.786-3.07M15 19.128v.106A12.318 12.318 0 0 1 8.624 21c-2.331 0-4.512-.645-6.374-1.766l-.001-.109a6.375 6.375 0 0 1 11.964-3.07M12 6.375a3.375 3.375 0 1 1-6.75 0 3.375 3.375 0 0 1 6.75 0Zm8.25 2.25a2.625 2.625 0 1 1-5.25 0 2.625 2.625 0 0 1 5.25 0Z" /></svg>`,
 };
 ---
 
@@ -37,31 +37,49 @@ const icons: Record<string, string> = {
     <h2 class="text-3xl font-semibold text-[var(--color-text)] mb-2 text-center">Accesos Rápidos</h2>
     <p class="text-[var(--color-muted)] text-center mb-10">Todos tus formularios en un solo lugar</p>
     <div class="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-4 gap-4">
-      {links.map((link) => (
-        <a
-          href={safeUrl(link.url)}
-          target="_blank"
-          rel="noopener noreferrer"
-          class="group bg-[var(--color-surface)] border border-[var(--color-border)] rounded-xl p-6 flex flex-col gap-3 hover:shadow-md hover:-translate-y-0.5 transition-all duration-200"
-        >
-          <div class="w-10 h-10 text-[var(--color-primary)]" set:html={icons[VALID_ICONS.has(link.icon) ? link.icon : 'file-text']} />
-          <div>
-            <span class="inline-block text-xs font-medium bg-[var(--color-accent)]/15 text-[var(--color-primary-dark)] px-2 py-0.5 rounded-full mb-2">
-              {link.category}
-            </span>
-            <h3 class="font-semibold text-[var(--color-text)] group-hover:text-[var(--color-primary)] transition-colors">
-              {link.title}
-            </h3>
-            <p class="text-sm text-[var(--color-muted)] mt-1">{link.description}</p>
-          </div>
-          <div class="mt-auto flex items-center text-[var(--color-primary)] text-sm font-medium">
-            Abrir formulario
-            <svg class="w-4 h-4 ml-1 group-hover:translate-x-1 transition-transform" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7" />
-            </svg>
-          </div>
-        </a>
-      ))}
+      {links.map((link) => {
+        const isProvider = link.id === 'proveedores';
+        return (
+          <a
+            href={safeUrl(link.url)}
+            target="_blank"
+            rel="noopener noreferrer"
+            class={`group rounded-xl p-6 flex flex-col gap-3 hover:shadow-md hover:-translate-y-0.5 transition-all duration-200 ${
+              isProvider
+                ? 'bg-[var(--color-primary)] border border-[var(--color-primary-2)]'
+                : 'bg-[var(--color-surface)] border border-[var(--color-border)]'
+            }`}
+          >
+            <div class={`w-10 h-10 ${isProvider ? 'text-[var(--color-accent)]' : 'text-[var(--color-primary)]'}`}
+              set:html={icons[VALID_ICONS.has(link.icon) ? link.icon : 'file-text']} />
+            <div>
+              <span class={`inline-block text-xs font-medium px-2 py-0.5 rounded-full mb-2 ${
+                isProvider
+                  ? 'bg-white/15 text-white'
+                  : 'bg-[var(--color-accent)]/15 text-[var(--color-primary-dark)]'
+              }`}>
+                {link.category}
+              </span>
+              <h3 class={`font-semibold transition-colors ${
+                isProvider
+                  ? 'text-white group-hover:text-[var(--color-accent)]'
+                  : 'text-[var(--color-text)] group-hover:text-[var(--color-primary)]'
+              }`}>
+                {link.title}
+              </h3>
+              <p class={`text-sm mt-1 ${isProvider ? 'text-white/60' : 'text-[var(--color-muted)]'}`}>
+                {link.description}
+              </p>
+            </div>
+            <div class={`mt-auto flex items-center text-sm font-medium ${isProvider ? 'text-[var(--color-accent)]' : 'text-[var(--color-primary)]'}`}>
+              Abrir formulario
+              <svg class="w-4 h-4 ml-1 group-hover:translate-x-1 transition-transform" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7" />
+              </svg>
+            </div>
+          </a>
+        );
+      })}
     </div>
   </div>
 </div>
