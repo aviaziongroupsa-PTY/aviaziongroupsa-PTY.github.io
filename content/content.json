@@ -26,7 +26,7 @@
       "id": "planilla",
       "title": "Consultas de Planilla",
       "description": "Verificación de salario y descuentos",
-      "icon": "dollar-sign",
+      "icon": "help-circle",
       "url": "https://forms.gle/Ene5f3w6ai9S7WQ79",
       "category": "Nómina"
     },
@@ -42,7 +42,7 @@
       "id": "hojas-de-vida",
       "title": "Envío de Hoja de Vida",
       "description": "Postúlate a una posición en Aviazion Group",
-      "icon": "briefcase",
+      "icon": "person-document",
       "url": "https://REEMPLAZAR_CON_LINK_REAL",
       "category": "Reclutamiento"
     },
@@ -50,7 +50,7 @@
       "id": "proveedores",
       "title": "Carga de Facturas",
       "description": "Portal de proveedores — envío de facturas para pago",
-      "icon": "receipt-tax",
+      "icon": "handshake",
       "url": "https://REEMPLAZAR_CON_LINK_REAL",
       "category": "Proveedores"
     }
@@ -78,8 +78,8 @@
     },
     {
       "id": 5,
-      "question": "¿Qué incluye una liquidación por despido sin justa causa?",
-      "answer": "Una liquidación por despido sin justa causa incluye: prima de antigüedad (1 semana de salario por año trabajado), vacaciones proporcionales pendientes, décimo tercer mes proporcional del año en curso, y preaviso según tiempo de servicio."
+      "question": "¿Cuándo aplica el recargo en las horas extras?",
+      "answer": "Según la Ley 44 de 1995 (Art. 26), el recargo de sobretiempo (×1.75 sobre el factor base) aplica a partir de la 3.ª hora diaria de sobretiempo O desde la 9.ª hora semanal acumulada, lo que ocurra primero. Por ejemplo, si trabajas 2 horas extra un día y 1 hora extra al día siguiente, esa hora del segundo día ya lleva recargo porque supera las 9 horas semanales."
     },
     {
       "id": 6,
