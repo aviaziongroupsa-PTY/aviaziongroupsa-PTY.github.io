@@ -9,14 +9,18 @@ interface Props {
 const { site } = Astro.props;
 ---
 
-<section class="bg-[var(--color-primary)] text-white py-20 md:py-28">
-  <div class="max-w-6xl mx-auto px-4 md:px-8 text-center">
+<section class="relative text-white py-20 md:py-28 overflow-hidden" style="background: linear-gradient(135deg, var(--color-primary) 0%, var(--color-primary-2) 100%);">
+  <div class="absolute inset-0 pointer-events-none">
+    <div class="absolute -top-24 -right-24 w-96 h-96 rounded-full opacity-10" style="background: var(--color-primary-2);"></div>
+    <div class="absolute -bottom-16 -left-16 w-64 h-64 rounded-full opacity-10" style="background: var(--color-primary-2);"></div>
+  </div>
+  <div class="relative max-w-6xl mx-auto px-4 md:px-8 text-center">
     <div class="flex justify-center mb-8">
-      <div class="bg-white rounded-2xl px-6 py-4 shadow-lg">
+      <div class="bg-white rounded-2xl px-10 py-6 shadow-xl">
         <img
           src={site.logoUrl}
           alt="Aviazion Group"
-          class="h-16 md:h-20 w-auto"
+          class="h-20 md:h-28 w-auto"
         />
       </div>
     </div>
@@ -41,4 +45,5 @@ const { site } = Astro.props;
       </a>
     </div>
   </div>
+  <div class="absolute bottom-0 left-0 right-0 h-1" style="background: linear-gradient(90deg, var(--color-primary-2), var(--color-accent), var(--color-primary-2));"></div>
 </section>
