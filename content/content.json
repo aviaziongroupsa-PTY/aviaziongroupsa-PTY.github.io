@@ -47,6 +47,14 @@
       "category": "Reclutamiento"
     },
     {
+      "id": "aviazion-tools",
+      "title": "AviazionTools",
+      "description": "Plataforma de control y gestión de herramientas",
+      "icon": "wrench",
+      "url": "https://aviaziongrouptools.zohocreatorportal.com/",
+      "category": "Operaciones"
+    },
+    {
       "id": "proveedores",
       "title": "Carga de Facturas",
       "description": "Portal de proveedores — envío de facturas para pago",
