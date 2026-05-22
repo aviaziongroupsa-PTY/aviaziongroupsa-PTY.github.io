@@ -1,0 +1,44 @@
+---
+interface Props {
+  site: {
+    name: string;
+    tagline: string;
+    logoUrl: string;
+  };
+}
+const { site } = Astro.props;
+---
+
+<section class="bg-[var(--color-primary)] text-white py-20 md:py-28">
+  <div class="max-w-6xl mx-auto px-4 md:px-8 text-center">
+    <div class="flex justify-center mb-8">
+      <div class="bg-white rounded-2xl px-6 py-4 shadow-lg">
+        <img
+          src={site.logoUrl}
+          alt="Aviazion Group"
+          class="h-16 md:h-20 w-auto"
+        />
+      </div>
+    </div>
+    <h1 class="text-3xl md:text-5xl font-bold mb-4 leading-tight">
+      {site.name}
+    </h1>
+    <p class="text-white/70 text-lg md:text-xl mb-10 max-w-2xl mx-auto">
+      {site.tagline}
+    </p>
+    <div class="flex flex-col sm:flex-row gap-4 justify-center">
+      <a
+        href="#accesos"
+        class="bg-[var(--color-accent)] hover:opacity-90 text-white font-semibold px-8 py-3 rounded-lg transition-opacity duration-200"
+      >
+        Ver Accesos Rápidos
+      </a>
+      <a
+        href="#calculadoras"
+        class="bg-white/10 hover:bg-white/20 text-white font-semibold px-8 py-3 rounded-lg border border-white/20 transition-colors duration-200"
+      >
+        Ir a Calculadoras
+      </a>
+    </div>
+  </div>
+</section>

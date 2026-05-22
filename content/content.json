@@ -1,0 +1,100 @@
+{
+  "site": {
+    "name": "Portal RRHH Aviazion Group",
+    "tagline": "Tus recursos de Recursos Humanos en un solo lugar",
+    "contactEmail": "admon@aviaziongroup.com",
+    "logoUrl": "/logo-aviazion.png"
+  },
+  "quickLinks": [
+    {
+      "id": "nuevo-ingreso",
+      "title": "Nuevo Ingreso",
+      "description": "Formulario de incorporación para nuevos empleados",
+      "icon": "user-plus",
+      "url": "https://forms.gle/ijiT1BJGfjjQFtJV7",
+      "category": "Incorporación"
+    },
+    {
+      "id": "sobretiempos",
+      "title": "Sobretiempos / OverTime",
+      "description": "Envío de horas extras para aprobación",
+      "icon": "clock",
+      "url": "https://forms.gle/fuCJCPB3Q7oFc8Da6",
+      "category": "Asistencia"
+    },
+    {
+      "id": "planilla",
+      "title": "Consultas de Planilla",
+      "description": "Verificación de salario y descuentos",
+      "icon": "dollar-sign",
+      "url": "https://forms.gle/Ene5f3w6ai9S7WQ79",
+      "category": "Nómina"
+    },
+    {
+      "id": "gastos",
+      "title": "Gastos Reembolsables",
+      "description": "Registro de gastos para reembolso",
+      "icon": "receipt",
+      "url": "https://forms.gle/hZZ6XULsPQpETFUaA",
+      "category": "Finanzas"
+    },
+    {
+      "id": "hojas-de-vida",
+      "title": "Envío de Hoja de Vida",
+      "description": "Postúlate a una posición en Aviazion Group",
+      "icon": "briefcase",
+      "url": "https://REEMPLAZAR_CON_LINK_REAL",
+      "category": "Reclutamiento"
+    },
+    {
+      "id": "proveedores",
+      "title": "Carga de Facturas",
+      "description": "Portal de proveedores — envío de facturas para pago",
+      "icon": "receipt-tax",
+      "url": "https://REEMPLAZAR_CON_LINK_REAL",
+      "category": "Proveedores"
+    }
+  ],
+  "faq": [
+    {
+      "id": 1,
+      "question": "¿Cuántas horas mensuales tengo que trabajar?",
+      "answer": "La jornada de Aviazion Group es 6×1: 6 días de trabajo por 1 día de descanso. Esto equivale a 26 días laborales al mes × 8 horas = 208 horas mensuales. El cálculo de cualquier pago por hora se basa en esta cifra."
+    },
+    {
+      "id": 2,
+      "question": "¿Cuántos días de vacaciones me corresponden por ley?",
+      "answer": "Según el Código de Trabajo de Panamá (Art. 54), tienes derecho a 30 días calendario de vacaciones por cada 11 meses trabajados. Si no has completado el período, se calcula proporcionalmente."
+    },
+    {
+      "id": 3,
+      "question": "¿Cuándo se paga el décimo tercer mes?",
+      "answer": "El décimo tercer mes se paga en tres cuotas: 15 de abril (por enero-marzo), 15 de agosto (por abril-julio) y 15 de diciembre (por agosto-noviembre). Equivale a un mes de salario anual."
+    },
+    {
+      "id": 4,
+      "question": "¿Cuál es el recargo por horas extras y por trabajo en día de descanso?",
+      "answer": "Según la Ley 44 de 1995 (Art. 26), las horas extras diurnas se pagan al 125% de la hora regular y las nocturnas al 150%. El trabajo en días feriados o en tu día de descanso obligatorio se paga al 200% de la hora regular."
+    },
+    {
+      "id": 5,
+      "question": "¿Qué incluye una liquidación por despido sin justa causa?",
+      "answer": "Una liquidación por despido sin justa causa incluye: prima de antigüedad (1 semana de salario por año trabajado), vacaciones proporcionales pendientes, décimo tercer mes proporcional del año en curso, y preaviso según tiempo de servicio."
+    },
+    {
+      "id": 6,
+      "question": "¿A quién contacto para dudas sobre mi planilla?",
+      "answer": "Para consultas sobre tu planilla, usa el formulario 'Consultas de Planilla' en Accesos Rápidos, o escribe directamente a admon@aviaziongroup.com."
+    },
+    {
+      "id": 7,
+      "question": "¿Cómo envío mi hoja de vida?",
+      "answer": "Usa el formulario 'Envío de Hoja de Vida' en la sección de Accesos Rápidos. Adjunta tu CV en formato PDF. Nuestro equipo de RRHH revisará tu perfil y te contactará si hay una posición disponible."
+    },
+    {
+      "id": 8,
+      "question": "¿Cómo envío una factura como proveedor?",
+      "answer": "Usa el formulario 'Carga de Facturas' en la sección de Accesos Rápidos. Adjunta tu factura en PDF con el número de orden de compra correspondiente. Para consultas sobre pagos, escribe a admon@aviaziongroup.com."
+    }
+  ]
+}
