@@ -1,0 +1,21 @@
+---
+interface Props {
+  email: string;
+}
+const { email } = Astro.props;
+---
+
+<footer class="bg-[var(--color-primary-dark)] text-white py-10 mt-16">
+  <div class="max-w-6xl mx-auto px-4 md:px-8 text-center">
+    <p class="text-white/70 text-sm mb-2">¿Dudas? Escríbenos a</p>
+    <a
+      href={`mailto:${email}`}
+      class="text-[var(--color-accent)] hover:text-white font-medium text-sm transition-colors"
+    >
+      {email}
+    </a>
+    <p class="text-white/40 text-xs mt-6">
+      © 2026 Aviazion Group. Todos los derechos reservados.
+    </p>
+  </div>
+</footer>
