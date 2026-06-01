@@ -33,10 +33,13 @@ const icons: Record<string, string> = {
 };
 ---
 
-<div class="py-16 px-4 md:px-8">
+<section id="accesos" class="py-16 px-4 md:px-8">
   <div class="max-w-6xl mx-auto">
-    <h2 class="text-3xl font-semibold text-[var(--color-text)] mb-2 text-center">Accesos Rápidos</h2>
-    <p class="text-[var(--color-muted)] text-center mb-10">Todos tus formularios en un solo lugar</p>
+    <div class="mb-10">
+      <p class="text-[var(--color-accent)] text-xs font-semibold tracking-widest uppercase mb-2">Formularios</p>
+      <h2 class="text-3xl font-bold text-[var(--color-text)] mb-2">Accesos rápidos</h2>
+      <p class="text-[var(--color-muted)] max-w-[48ch]">Todos tus trámites de recursos humanos en un solo lugar.</p>
+    </div>
     <div class="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-4 gap-4">
       {links.map((link) => {
         const isProvider = link.id === 'proveedores';
@@ -45,19 +48,22 @@ const icons: Record<string, string> = {
             href={safeUrl(link.url)}
             target="_blank"
             rel="noopener noreferrer"
-            class={`group rounded-xl p-6 flex flex-col gap-3 hover:shadow-md hover:-translate-y-0.5 transition-all duration-200 ${
-              isProvider
-                ? 'bg-[var(--color-primary)] border border-[var(--color-primary-2)]'
-                : 'bg-[var(--color-surface)] border border-[var(--color-border)]'
+            class={`group rounded-xl p-6 flex flex-col gap-3 transition-all duration-200 ${
+              isProvider ? 'bg-[var(--color-primary)]' : 'bg-[var(--color-surface)]'
             }`}
+            style={isProvider ? 'box-shadow: var(--shadow-card-dark);' : 'box-shadow: var(--shadow-card);'}
+            onmouseover={`this.style.boxShadow='${isProvider ? 'var(--shadow-card-dark-hover)' : 'var(--shadow-card-hover)'}'; this.style.transform='translateY(-3px)';`}
+            onmouseout={`this.style.boxShadow='${isProvider ? 'var(--shadow-card-dark)' : 'var(--shadow-card)'}'; this.style.transform='';`}
+            onmousedown="this.style.transform='translateY(-1px) scale(0.99)';"
+            onmouseup="this.style.transform='translateY(-3px)';"
           >
             <div class={`w-10 h-10 ${isProvider ? 'text-[var(--color-accent)]' : 'text-[var(--color-primary)]'}`}
               set:html={icons[VALID_ICONS.has(link.icon) ? link.icon : 'file-text']} />
             <div>
-              <span class={`inline-block text-xs font-medium px-2 py-0.5 rounded-full mb-2 ${
+              <span class={`inline-block text-xs font-semibold px-2 py-0.5 rounded mb-2 ${
                 isProvider
                   ? 'bg-white/15 text-white'
-                  : 'bg-[var(--color-accent)]/15 text-[var(--color-primary-dark)]'
+                  : 'bg-[var(--color-accent)]/20 text-[var(--color-primary-dark)]'
               }`}>
                 {link.category}
               </span>
@@ -68,13 +74,13 @@ const icons: Record<string, string> = {
               }`}>
                 {link.title}
               </h3>
-              <p class={`text-sm mt-1 ${isProvider ? 'text-white/60' : 'text-[var(--color-muted)]'}`}>
+              <p class={`text-sm mt-1 leading-relaxed ${isProvider ? 'text-white/60' : 'text-[var(--color-muted)]'}`}>
                 {link.description}
               </p>
             </div>
             <div class={`mt-auto flex items-center text-sm font-medium ${isProvider ? 'text-[var(--color-accent)]' : 'text-[var(--color-primary)]'}`}>
               Abrir formulario
-              <svg class="w-4 h-4 ml-1 group-hover:translate-x-1 transition-transform" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <svg class="w-4 h-4 ml-1 group-hover:translate-x-1 transition-transform duration-200" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7" />
               </svg>
             </div>
@@ -83,4 +89,4 @@ const icons: Record<string, string> = {
       })}
     </div>
   </div>
-</div>
+</section>

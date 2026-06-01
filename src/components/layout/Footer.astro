@@ -5,17 +5,16 @@ interface Props {
 const { email } = Astro.props;
 ---
 
-<footer class="bg-[var(--color-primary-dark)] text-white py-10 mt-16">
-  <div class="max-w-6xl mx-auto px-4 md:px-8 text-center">
-    <p class="text-white/70 text-sm mb-2">¿Dudas? Escríbenos a</p>
-    <a
-      href={`mailto:${email}`}
-      class="text-[var(--color-accent)] hover:text-white font-medium text-sm transition-colors"
-    >
-      {email}
-    </a>
-    <p class="text-white/40 text-xs mt-6">
-      © 2026 Aviazion Group. Todos los derechos reservados.
-    </p>
+<footer class="bg-[var(--color-primary-dark)] mt-16">
+  <div class="max-w-6xl mx-auto px-4 md:px-8">
+    <div class="border-t border-white/10 py-8 flex flex-col sm:flex-row items-center justify-between gap-4">
+      <p class="text-white/50 text-sm">
+        © {new Date().getFullYear()} Aviazion Group. Todos los derechos reservados.
+      </p>
+      <p class="text-white/50 text-sm">
+        ¿Dudas?{' '}
+        <a href={`mailto:${email}`} class="text-[var(--color-accent)] hover:text-[var(--color-accent)]/80 transition-colors underline-offset-4 hover:underline">{email}</a>
+      </p>
+    </div>
   </div>
 </footer>
