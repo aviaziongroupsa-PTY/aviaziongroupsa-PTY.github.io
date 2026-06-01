@@ -9,48 +9,68 @@ interface Props {
 const { site } = Astro.props;
 ---
 
-<section id="inicio" class="relative text-white overflow-hidden" style="background-color: var(--color-primary);">
-  <!-- Grain overlay -->
-  <div class="grain-overlay" aria-hidden="true"></div>
-  <!-- Radial glow top-right in primary-2 -->
-  <div class="absolute -top-40 -right-40 w-[600px] h-[600px] rounded-full pointer-events-none" style="background: radial-gradient(circle, rgba(27,122,200,0.22) 0%, transparent 70%);" aria-hidden="true"></div>
-  <!-- Subtle accent glow bottom-left -->
-  <div class="absolute -bottom-24 -left-24 w-80 h-80 rounded-full pointer-events-none" style="background: radial-gradient(circle, rgba(232,140,14,0.10) 0%, transparent 70%);" aria-hidden="true"></div>
+<section id="inicio" class="relative text-white overflow-hidden flex flex-col items-center justify-center" style="min-height: 100dvh; background-color: var(--color-bg);">
+  <!-- Dot-grid radar pattern -->
+  <div class="dot-grid" aria-hidden="true"></div>
+  <!-- Electric blue radial glow center -->
+  <div class="absolute inset-0 pointer-events-none" style="background: radial-gradient(ellipse 70% 60% at 50% 50%, rgba(27,122,200,0.12) 0%, transparent 70%);" aria-hidden="true"></div>
+  <!-- Top-left accent glow -->
+  <div class="absolute top-0 left-0 w-[500px] h-[500px] pointer-events-none" style="background: radial-gradient(circle at 0% 0%, rgba(27,122,200,0.08) 0%, transparent 60%);" aria-hidden="true"></div>
+  <!-- Bottom-right amber glow -->
+  <div class="absolute bottom-0 right-0 w-80 h-80 pointer-events-none" style="background: radial-gradient(circle at 100% 100%, rgba(232,140,14,0.08) 0%, transparent 60%);" aria-hidden="true"></div>
 
-  <div class="relative max-w-6xl mx-auto px-4 md:px-8 py-20 md:py-28">
-    <div class="flex flex-col md:flex-row md:items-center gap-10 md:gap-16">
-      <!-- Logo -->
-      <div class="flex-shrink-0 flex justify-center md:justify-start">
-        <div class="bg-white rounded-xl px-8 py-5 shadow-[0_4px_24px_rgba(0,0,0,0.20)] border border-white/20">
-          <img
-            src={site.logoUrl}
-            alt="Aviazion Group"
-            class="h-16 md:h-24 w-auto"
-          />
-        </div>
-      </div>
-      <!-- Text -->
-      <div class="text-center md:text-left">
-        <p class="text-[var(--color-accent)] text-sm font-semibold tracking-widest uppercase mb-3">Portal de Recursos Humanos</p>
-        <h1 class="text-4xl md:text-5xl font-bold leading-[1.1] mb-4">{site.name}</h1>
-        <p class="text-white/65 text-lg md:text-xl mb-8 max-w-[52ch]">{site.tagline}</p>
-        <div class="flex flex-col sm:flex-row gap-3 justify-center md:justify-start">
-          <a
-            href="#accesos"
-            class="inline-block bg-[var(--color-accent)] text-white font-semibold px-8 py-3 rounded-lg hover:brightness-105 hover:-translate-y-0.5 active:scale-[0.98] active:translate-y-0 transition-all duration-200"
-          >
-            Ver accesos rápidos
-          </a>
-          <a
-            href="#calculadoras"
-            class="inline-block bg-white/10 text-white border border-white/20 font-semibold px-8 py-3 rounded-lg hover:bg-white/20 hover:-translate-y-0.5 active:scale-[0.98] active:translate-y-0 transition-all duration-200"
-          >
-            Ir a calculadoras
-          </a>
-        </div>
-      </div>
+  <div class="relative w-full max-w-4xl mx-auto px-4 md:px-8 py-32 text-center flex flex-col items-center">
+    <!-- Logo badge -->
+    <div class="mb-10 inline-flex items-center justify-center bg-white/8 border border-[var(--color-border)] rounded-2xl px-8 py-5 backdrop-blur-sm">
+      <img
+        src={site.logoUrl}
+        alt="Aviazion Group"
+        class="h-14 md:h-20 w-auto"
+      />
+    </div>
+
+    <!-- Eyebrow -->
+    <span class="eyebrow mb-5">Portal de Recursos Humanos</span>
+
+    <!-- Headline -->
+    <h1 class="text-5xl md:text-7xl font-bold leading-[1.0] mb-6" style="background: linear-gradient(135deg, #fff 60%, rgba(27,122,200,0.8) 100%); -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text;">
+      {site.name}
+    </h1>
+
+    <!-- Tagline -->
+    <p class="text-[var(--color-muted)] text-lg md:text-xl mb-10 max-w-[44ch]">{site.tagline}</p>
+
+    <!-- CTAs -->
+    <div class="flex flex-col sm:flex-row gap-3 justify-center">
+      <a
+        href="#accesos"
+        class="inline-block font-semibold px-8 py-3 rounded-lg transition-all duration-200 hover:-translate-y-0.5 active:scale-[0.98]"
+        style="background: var(--color-primary-2); color: white; box-shadow: 0 0 24px rgba(27,122,200,0.4);"
+        onmouseover="this.style.boxShadow='0 0 36px rgba(27,122,200,0.6)'"
+        onmouseout="this.style.boxShadow='0 0 24px rgba(27,122,200,0.4)'"
+      >
+        Ver accesos rápidos
+      </a>
+      <a
+        href="#calculadoras"
+        class="inline-block text-white font-semibold px-8 py-3 rounded-lg transition-all duration-200 hover:-translate-y-0.5 active:scale-[0.98]"
+        style="background: rgba(255,255,255,0.06); border: 1px solid var(--color-border);"
+        onmouseover="this.style.background='rgba(255,255,255,0.12)'"
+        onmouseout="this.style.background='rgba(255,255,255,0.06)'"
+      >
+        Ir a calculadoras
+      </a>
     </div>
   </div>
-  <!-- Bottom accent line -->
-  <div class="absolute bottom-0 left-0 right-0 h-[2px]" style="background: linear-gradient(90deg, transparent, var(--color-primary-2), var(--color-accent), var(--color-primary-2), transparent);" aria-hidden="true"></div>
+
+  <!-- Scroll indicator -->
+  <div class="absolute bottom-8 left-1/2 -translate-x-1/2 flex flex-col items-center gap-2 text-[var(--color-muted)] text-xs tracking-widest uppercase" aria-hidden="true">
+    <span>Scroll</span>
+    <svg class="w-4 h-4 animate-bounce" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+      <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7" />
+    </svg>
+  </div>
+
+  <!-- Bottom line -->
+  <div class="absolute bottom-0 left-0 right-0 h-px" style="background: linear-gradient(90deg, transparent, rgba(27,122,200,0.5), transparent);" aria-hidden="true"></div>
 </section>

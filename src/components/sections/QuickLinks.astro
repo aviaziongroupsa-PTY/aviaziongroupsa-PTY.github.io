@@ -33,54 +33,42 @@ const icons: Record<string, string> = {
 };
 ---
 
-<section id="accesos" class="py-16 px-4 md:px-8">
+<section id="accesos" class="py-24 px-4 md:px-8" style="background-color: var(--color-bg);">
   <div class="max-w-6xl mx-auto">
-    <div class="mb-10">
-      <p class="text-[var(--color-accent)] text-xs font-semibold tracking-widest uppercase mb-2">Formularios</p>
-      <h2 class="text-3xl font-bold text-[var(--color-text)] mb-2">Accesos rápidos</h2>
-      <p class="text-[var(--color-muted)] max-w-[48ch]">Todos tus trámites de recursos humanos en un solo lugar.</p>
+    <div class="mb-12 text-center">
+      <span class="eyebrow">Formularios</span>
+      <h2 class="text-4xl font-bold text-[var(--color-text)] mb-3">Accesos rápidos</h2>
+      <p class="text-[var(--color-muted)] max-w-[44ch] mx-auto">Todos tus trámites de recursos humanos en un solo lugar.</p>
     </div>
-    <div class="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-4 gap-4">
-      {links.map((link) => {
+
+    <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+      {links.map((link, index) => {
         const isProvider = link.id === 'proveedores';
+        const num = String(index + 1).padStart(2, '0');
         return (
           <a
             href={safeUrl(link.url)}
             target="_blank"
             rel="noopener noreferrer"
-            class={`group rounded-xl p-6 flex flex-col gap-3 transition-all duration-200 ${
-              isProvider ? 'bg-[var(--color-primary)]' : 'bg-[var(--color-surface)]'
-            }`}
-            style={isProvider ? 'box-shadow: var(--shadow-card-dark);' : 'box-shadow: var(--shadow-card);'}
-            onmouseover={`this.style.boxShadow='${isProvider ? 'var(--shadow-card-dark-hover)' : 'var(--shadow-card-hover)'}'; this.style.transform='translateY(-3px)';`}
-            onmouseout={`this.style.boxShadow='${isProvider ? 'var(--shadow-card-dark)' : 'var(--shadow-card)'}'; this.style.transform='';`}
-            onmousedown="this.style.transform='translateY(-1px) scale(0.99)';"
-            onmouseup="this.style.transform='translateY(-3px)';"
+            class={`group glass-card rounded-xl p-6 flex items-start gap-5 ${isProvider ? 'border-[rgba(232,140,14,0.3)]' : ''}`}
           >
-            <div class={`w-10 h-10 ${isProvider ? 'text-[var(--color-accent)]' : 'text-[var(--color-primary)]'}`}
-              set:html={icons[VALID_ICONS.has(link.icon) ? link.icon : 'file-text']} />
-            <div>
-              <span class={`inline-block text-xs font-semibold px-2 py-0.5 rounded mb-2 ${
-                isProvider
-                  ? 'bg-white/15 text-white'
-                  : 'bg-[var(--color-accent)]/20 text-[var(--color-primary-dark)]'
-              }`}>
-                {link.category}
-              </span>
-              <h3 class={`font-semibold transition-colors ${
-                isProvider
-                  ? 'text-white group-hover:text-[var(--color-accent)]'
-                  : 'text-[var(--color-text)] group-hover:text-[var(--color-primary)]'
-              }`}>
-                {link.title}
-              </h3>
-              <p class={`text-sm mt-1 leading-relaxed ${isProvider ? 'text-white/60' : 'text-[var(--color-muted)]'}`}>
-                {link.description}
-              </p>
+            <!-- Number + icon column -->
+            <div class="flex-shrink-0 flex flex-col items-center gap-3">
+              <span class="text-xs font-mono font-semibold" style="color: var(--color-primary-2); letter-spacing: 0.05em;">{num}</span>
+              <div class={`w-9 h-9 ${isProvider ? 'text-[var(--color-accent)]' : 'text-[var(--color-primary-2)]'}`}
+                set:html={icons[VALID_ICONS.has(link.icon) ? link.icon : 'file-text']} />
             </div>
-            <div class={`mt-auto flex items-center text-sm font-medium ${isProvider ? 'text-[var(--color-accent)]' : 'text-[var(--color-primary)]'}`}>
-              Abrir formulario
-              <svg class="w-4 h-4 ml-1 group-hover:translate-x-1 transition-transform duration-200" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <!-- Content -->
+            <div class="flex-1 min-w-0">
+              <div class="flex items-center gap-2 mb-1">
+                <span class="text-xs font-semibold tracking-widest uppercase" style={`color: ${isProvider ? 'var(--color-accent)' : 'var(--color-primary-2)'};`}>{link.category}</span>
+              </div>
+              <h3 class="font-semibold text-[var(--color-text)] group-hover:text-white transition-colors mb-1">{link.title}</h3>
+              <p class="text-sm text-[var(--color-muted)] leading-relaxed">{link.description}</p>
+            </div>
+            <!-- Arrow -->
+            <div class="flex-shrink-0 self-center">
+              <svg class="w-4 h-4 text-[var(--color-muted)] group-hover:text-[var(--color-primary-2)] group-hover:translate-x-1 transition-all duration-200" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7" />
               </svg>
             </div>
