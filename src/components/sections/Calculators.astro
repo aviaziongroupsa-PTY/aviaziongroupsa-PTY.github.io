@@ -19,15 +19,16 @@ const tabs = [
 
     <div
       x-data="{ tab: 'sobretiempo' }"
-      class="bg-[var(--color-surface)] border border-[var(--color-border)] rounded-2xl overflow-hidden shadow-sm"
+      class="rounded-2xl overflow-hidden"
+      style="background: rgba(13,27,46,0.7); border: 1px solid var(--color-border); backdrop-filter: blur(12px);"
     >
       <!-- Tabs -->
-      <div class="flex overflow-x-auto border-b border-[var(--color-border)]">
+      <div class="flex overflow-x-auto" style="border-bottom: 1px solid var(--color-border);">
         {tabs.map((t) => (
           <button
             x-on:click={`tab = '${t.id}'`}
-            x-bind:class={`tab === '${t.id}' ? 'border-b-2 border-[var(--color-primary)] text-[var(--color-primary)] font-semibold' : 'text-[var(--color-muted)] hover:text-[var(--color-text)]'`}
-            class="px-5 py-4 text-sm whitespace-nowrap transition-colors flex-shrink-0"
+            x-bind:class={`tab === '${t.id}' ? 'border-b-2 border-[var(--color-primary-2)] text-white font-semibold bg-[rgba(27,122,200,0.10)]' : 'text-[var(--color-muted)] hover:text-[var(--color-text)]'`}
+            class="px-5 py-4 text-sm whitespace-nowrap transition-all duration-200 flex-shrink-0"
           >
             {t.label}
           </button>
