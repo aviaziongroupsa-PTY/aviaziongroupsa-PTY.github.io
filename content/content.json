@@ -8,8 +8,8 @@
   "quickLinks": [
     {
       "id": "nuevo-ingreso",
-      "title": "Nuevo Ingreso",
-      "description": "Formulario de incorporación para nuevos empleados",
+      "title": "Únete a Aviazion Group",
+      "description": "Regístrate como nuevo colaborador o postúlate para futuras oportunidades",
       "icon": "user-plus",
       "url": "https://forms.office.com/r/3ABYu183EK",
       "category": "Incorporación"
@@ -37,14 +37,6 @@
       "icon": "dollar-sign",
       "url": "https://forms.gle/hZZ6XULsPQpETFUaA",
       "category": "Finanzas"
-    },
-    {
-      "id": "hojas-de-vida",
-      "title": "Envío de Hoja de Vida",
-      "description": "Postúlate a una posición en Aviazion Group",
-      "icon": "person-document",
-      "url": "https://REEMPLAZAR_CON_LINK_REAL",
-      "category": "Reclutamiento"
     },
     {
       "id": "aviazion-tools",
@@ -97,7 +89,7 @@
     {
       "id": 7,
       "question": "¿Cómo envío mi hoja de vida?",
-      "answer": "Usa el formulario 'Envío de Hoja de Vida' en la sección de Accesos Rápidos. Adjunta tu CV en formato PDF. Nuestro equipo de RRHH revisará tu perfil y te contactará si hay una posición disponible."
+      "answer": "Usa el formulario 'Únete a Aviazion Group' en la sección de Accesos Rápidos. Adjunta tu CV en formato PDF. Nuestro equipo de RRHH revisará tu perfil y te contactará si hay una posición disponible."
     },
     {
       "id": 8,
