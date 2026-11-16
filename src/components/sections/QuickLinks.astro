@@ -6,12 +6,20 @@ interface Props {
 }
 const { links } = Astro.props;
 
-function safeUrl(url: string): string {
+/**
+ * Devuelve la URL solo si es http(s) y apunta a un dominio real.
+ * Un marcador sin completar (p. ej. https://REEMPLAZAR_CON_LINK_REAL) o un
+ * valor vacío devuelve null y la tarjeta se muestra como "Próximamente",
+ * sin enlace: así nunca se publica un acceso roto.
+ */
+function safeUrl(url: string): string | null {
   try {
     const parsed = new URL(url);
-    return ['https:', 'http:'].includes(parsed.protocol) ? url : '#';
+    const okProtocol = ['https:', 'http:'].includes(parsed.protocol);
+    const okHost = parsed.hostname.includes('.') && !/reemplazar/i.test(parsed.hostname);
+    return okProtocol && okHost ? url : null;
   } catch {
-    return '#';
+    return null;
   }
 }
 
@@ -33,48 +41,48 @@ const icons: Record<string, string> = {
 };
 ---
 
-<section id="accesos" class="py-24 px-4 md:px-8" style="background-color: var(--color-bg);">
+<section id="accesos" aria-labelledby="accesos-titulo" class="py-24 px-4 md:px-8 bg-[var(--color-bg)]">
   <div class="max-w-6xl mx-auto">
     <div class="mb-12 text-center">
       <span class="eyebrow">Formularios</span>
-      <h2 class="text-4xl font-bold text-[var(--color-text)] mb-3">Accesos rápidos</h2>
+      <h2 id="accesos-titulo" class="text-4xl font-bold text-[var(--color-text)] mb-3">Accesos rápidos</h2>
       <p class="text-[var(--color-muted)] max-w-[44ch] mx-auto">Todos tus trámites de recursos humanos en un solo lugar.</p>
     </div>
 
-    <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+    <ul class="grid grid-cols-1 md:grid-cols-2 gap-4">
       {links.map((link, index) => {
-        const isProvider = link.id === 'proveedores';
+        const href = safeUrl(link.url);
         const num = String(index + 1).padStart(2, '0');
+        const Card = href ? 'a' : 'div';
+        const cardProps = href
+          ? { href, target: '_blank', rel: 'noopener noreferrer' }
+          : { 'aria-disabled': 'true' };
         return (
-          <a
-            href={safeUrl(link.url)}
-            target="_blank"
-            rel="noopener noreferrer"
-            class={`group glass-card rounded-xl p-6 flex items-start gap-5 ${isProvider ? 'border-[rgba(232,140,14,0.3)]' : ''}`}
-          >
-            <!-- Number + icon column -->
-            <div class="flex-shrink-0 flex flex-col items-center gap-3">
-              <span class="text-xs font-mono font-semibold" style="color: var(--color-primary-2); letter-spacing: 0.05em;">{num}</span>
-              <div class={`w-9 h-9 ${isProvider ? 'text-[var(--color-accent)]' : 'text-[var(--color-primary-2)]'}`}
-                set:html={icons[VALID_ICONS.has(link.icon) ? link.icon : 'file-text']} />
-            </div>
-            <!-- Content -->
-            <div class="flex-1 min-w-0">
-              <div class="flex items-center gap-2 mb-1">
-                <span class="text-xs font-semibold tracking-widest uppercase" style={`color: ${isProvider ? 'var(--color-accent)' : 'var(--color-primary-2)'};`}>{link.category}</span>
+          <li class="flex">
+            <Card {...cardProps} class={`group glass-card rounded-xl p-5 sm:p-6 flex flex-1 items-start gap-4 sm:gap-5 ${href ? '' : 'is-disabled'}`}>
+              <div class="flex-shrink-0 flex flex-col items-center gap-3" aria-hidden="true">
+                <span class="text-xs font-mono font-semibold tracking-wider text-[var(--color-primary-2)]">{num}</span>
+                <div class="w-9 h-9 text-[var(--color-primary-2)]" set:html={icons[VALID_ICONS.has(link.icon) ? link.icon : 'file-text']} />
               </div>
-              <h3 class="font-semibold text-[var(--color-text)] group-hover:text-white transition-colors mb-1">{link.title}</h3>
-              <p class="text-sm text-[var(--color-muted)] leading-relaxed">{link.description}</p>
-            </div>
-            <!-- Arrow -->
-            <div class="flex-shrink-0 self-center">
-              <svg class="w-4 h-4 text-[var(--color-muted)] group-hover:text-[var(--color-primary-2)] group-hover:translate-x-1 transition-all duration-200" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7" />
-              </svg>
-            </div>
-          </a>
+              <div class="flex-1 min-w-0">
+                <p class="text-xs font-semibold tracking-widest uppercase text-[var(--color-primary-2)] mb-1">{link.category}</p>
+                <h3 class="font-semibold text-[var(--color-text)] group-hover:text-white transition-colors mb-1">{link.title}</h3>
+                <p class="text-sm text-[var(--color-muted)] leading-relaxed">{link.description}</p>
+              </div>
+              {href ? (
+                <div class="flex-shrink-0 self-center">
+                  <svg class="w-4 h-4 text-[var(--color-muted)] group-hover:text-[var(--color-primary-2)] group-hover:translate-x-1 transition-all duration-200" fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden="true">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7" />
+                  </svg>
+                  <span class="sr-only">(se abre en una pestaña nueva)</span>
+                </div>
+              ) : (
+                <span class="flex-shrink-0 self-start text-xs font-semibold rounded-full px-2.5 py-1 border border-[var(--color-accent)] text-[var(--color-accent-text)]">Próximamente</span>
+              )}
+            </Card>
+          </li>
         );
       })}
-    </div>
+    </ul>
   </div>
 </section>
