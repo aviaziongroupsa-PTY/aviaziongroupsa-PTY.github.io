@@ -5,19 +5,13 @@ interface Props {
 const { email } = Astro.props;
 ---
 
-<footer style="background-color: var(--color-primary-dark); border-top: 1px solid var(--color-border);">
+<footer class="bg-[var(--color-primary-dark)] border-t border-[var(--color-border)]">
   <div class="max-w-6xl mx-auto px-4 md:px-8">
-    <div class="py-8 flex flex-col sm:flex-row items-center justify-between gap-4">
-      <p class="text-xs font-mono tracking-widest uppercase" style="color: var(--color-muted);">
+    <div class="py-8 flex flex-col sm:flex-row items-center justify-between gap-4 text-center">
+      <p class="text-xs text-[var(--color-muted)]">
         © {new Date().getFullYear()} Aviazion Group — Todos los derechos reservados
       </p>
-      <a
-        href={`mailto:${email}`}
-        class="text-xs font-mono transition-colors duration-200"
-        style="color: var(--color-primary-2);"
-        onmouseover="this.style.color='white'"
-        onmouseout="this.style.color='var(--color-primary-2)'"
-      >{email}</a>
+      <a href={`mailto:${email}`} class="text-sm py-2 text-[var(--color-primary-2)] hover:text-white underline underline-offset-4 transition-colors duration-200">{email}</a>
     </div>
   </div>
 </footer>

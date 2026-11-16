@@ -1,41 +1,65 @@
 ---
 interface Props {
-  logo: string;
+  symbol: string;
 }
-const { logo } = Astro.props;
+const { symbol } = Astro.props;
+
+const nav = [
+  { href: '#accesos', label: 'Accesos rápidos' },
+  { href: '#calculadoras', label: 'Calculadoras' },
+  { href: '#faq', label: 'Preguntas frecuentes' },
+];
 ---
 
 <header
-  x-data="{ scrolled: false }"
-  x-init="window.addEventListener('scroll', () => { scrolled = window.scrollY > 60 })"
-  x-bind:class="scrolled ? 'bg-[rgba(7,15,28,0.90)] border-b border-[var(--color-border)] shadow-lg' : 'bg-transparent border-b border-transparent'"
-  class="fixed top-0 left-0 right-0 z-50 h-16 transition-all duration-300"
-  style="backdrop-filter: blur(16px); -webkit-backdrop-filter: blur(16px);"
+  x-data="{ scrolled: false, open: false }"
+  x-init="scrolled = window.scrollY > 60; window.addEventListener('scroll', () => { scrolled = window.scrollY > 60 }, { passive: true })"
+  x-on:keydown.escape.window="open = false"
+  x-bind:class="(scrolled || open) ? 'bg-[rgba(0,18,31,0.92)] border-[var(--color-border)] shadow-lg' : 'bg-transparent border-transparent'"
+  class="fixed top-0 left-0 right-0 z-50 border-b transition-colors duration-300 backdrop-blur-lg"
 >
-  <div class="max-w-6xl mx-auto px-4 md:px-8 h-full flex items-center justify-between">
-    <a href="#inicio" class="flex items-center gap-3">
-      <div class="bg-white/10 border border-white/15 rounded-lg px-2 py-1 flex items-center">
-        <img src={logo} alt="Aviazion Group" class="h-7 w-auto" />
-      </div>
-      <span class="text-white font-semibold text-sm leading-tight hidden sm:block">
+  <div class="max-w-6xl mx-auto px-4 md:px-8 h-16 flex items-center justify-between">
+    <a href="#inicio" class="flex items-center gap-3" x-on:click="open = false">
+      {/* Kit de marca: en espacios pequeños va el símbolo solo; el logo completo exige 100 px de ancho. */}
+      <img src={symbol} alt="" width="65" height="24" class="h-6 w-auto" />
+      <span class="text-white font-semibold text-sm leading-tight">
         Portal RRHH<br />
         <span class="text-[var(--color-primary-2)] text-xs font-normal">Aviazion Group</span>
       </span>
     </a>
-    <nav class="hidden md:flex items-center gap-6">
-      <a href="#accesos" class="text-white/60 hover:text-white text-sm font-medium transition-colors duration-200">Accesos Rápidos</a>
-      <a href="#calculadoras" class="text-white/60 hover:text-white text-sm font-medium transition-colors duration-200">Calculadoras</a>
-      <a href="#faq" class="text-white/60 hover:text-white text-sm font-medium transition-colors duration-200">FAQ</a>
+
+    <nav aria-label="Secciones" class="hidden md:flex items-center gap-6">
+      {nav.map((item) => (
+        <a href={item.href} class="text-[var(--color-muted)] hover:text-white text-sm font-medium transition-colors duration-200">{item.label}</a>
+      ))}
     </nav>
+
     <button
-      x-data="{ open: false }"
-      @click="open = !open"
-      class="md:hidden text-white/70 hover:text-white p-2 transition-colors"
-      aria-label="Menú"
+      type="button"
+      x-on:click="open = !open"
+      x-bind:aria-expanded="open ? 'true' : 'false'"
+      aria-expanded="false"
+      aria-controls="menu-movil"
+      aria-label="Menú de secciones"
+      class="md:hidden text-white p-2.5 -mr-2.5 rounded-lg"
     >
-      <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16" />
+      <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden="true">
+        <path x-show="!open" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16" />
+        <path x-show="open" style="display:none;" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 6l12 12M18 6L6 18" />
       </svg>
     </button>
   </div>
+
+  <nav
+    id="menu-movil"
+    aria-label="Secciones"
+    x-show="open"
+    x-transition.opacity
+    style="display:none;"
+    class="md:hidden border-t border-[var(--color-border)] px-4 pb-3"
+  >
+    {nav.map((item) => (
+      <a href={item.href} x-on:click="open = false" class="block py-3 text-base font-medium text-[var(--color-text)]">{item.label}</a>
+    ))}
+  </nav>
 </header>
