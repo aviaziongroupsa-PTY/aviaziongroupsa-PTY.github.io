@@ -1,69 +1,163 @@
 // ============================================================
-// SOBRETIEMPO — Ley 44 de 1995, Art. 26
-// Jornada 6×1: 26 días laborales × 8 horas = 208 horas/mes
-// Base hora: salario_mensual / 208
-// Diurno ×1.25 | Nocturno ×1.50 | Feriado/Día descanso ×2.00
+// Lógica pura de las cuatro calculadoras del portal.
+//
+// Esta es la ÚNICA implementación de los cálculos: los componentes
+// Alpine (src/scripts/calculators.ts) llaman a estas funciones y
+// tests/calculations.test.ts las verifica. No dupliques fórmulas en
+// los componentes.
+//
+// REGLA FUNDAMENTAL: jornada 6×1 → 26 días × 8 h = 208 horas/mes.
+// El salario por hora SIEMPRE es salarioMensual / 208. Nunca 240.
 // ============================================================
-export function calcOvertime(params: {
-  salarioMensual: number;
-  horasDiurnas: number;
-  horasNocturnas: number;
-  horasFeriado: number;
-}): {
-  salarioHora: number;
-  montoDiurno: number;
-  montoNocturno: number;
-  montoFeriado: number;
-  total: number;
-} {
-  const salarioHora = params.salarioMensual / 208;
-  const montoDiurno = salarioHora * 1.25 * params.horasDiurnas;
-  const montoNocturno = salarioHora * 1.50 * params.horasNocturnas;
-  const montoFeriado = salarioHora * 2.00 * params.horasFeriado;
-  const total = montoDiurno + montoNocturno + montoFeriado;
-  return {
-    salarioHora: parseFloat(salarioHora.toFixed(4)),
-    montoDiurno: parseFloat(montoDiurno.toFixed(2)),
-    montoNocturno: parseFloat(montoNocturno.toFixed(2)),
-    montoFeriado: parseFloat(montoFeriado.toFixed(2)),
-    total: parseFloat(total.toFixed(2)),
-  };
+
+export const HORAS_MES = 208;
+
+/** Redondea a centésimos igual que lo hacía la interfaz original. */
+export function round2(n: number): number {
+  return parseFloat(n.toFixed(2));
 }
 
-// ============================================================
-// VACACIONES — Código de Trabajo de Panamá, Art. 54
-// 30 días calendario por cada 11 meses trabajados
-// Pago: (salario_mensual / 30) × días_vacaciones
-// ============================================================
+/** Convierte la entrada de un campo a número ≥ 0 (vacío o inválido → 0). */
+export function toAmount(value: unknown): number {
+  const n = parseFloat(String(value ?? ''));
+  return Number.isFinite(n) && n > 0 ? n : 0;
+}
+
+export function hourlyRate(salarioMensual: number): number {
+  return salarioMensual / HORAS_MES;
+}
+
+// ------------------------------------------------------------
+// SOBRETIEMPO — 13 categorías
+// Base por tipo de jornada: diurno ×1.25 · mixto ×1.50 · nocturno ×1.75
+// Recargo por exceso (3 h diarias / 9 h semanales): ×1.75 sobre la base
+// Día de descanso: ×1.50 sobre la base
+// Feriado nacional: ×2.50
+// ------------------------------------------------------------
+const BASE = { diurno: 1.25, mixto: 1.5, nocturno: 1.75 } as const;
+const RECARGO = 1.75;
+const DESCANSO = 1.5;
+
+export interface OvertimeRow {
+  code: string;
+  label: string;
+  factor: number;
+}
+
+export interface OvertimeGroup {
+  title: string;
+  rows: OvertimeRow[];
+}
+
+export const OVERTIME_GROUPS: OvertimeGroup[] = [
+  {
+    title: 'Día Regular — Sin Recargo',
+    rows: [
+      { code: 'SDiu', label: 'ST Diurno DiaNor', factor: BASE.diurno },
+      { code: 'SMix', label: 'ST Mixto DiaNor', factor: BASE.mixto },
+      { code: 'SNoc', label: 'ST Nocturno DiaNor', factor: BASE.nocturno },
+    ],
+  },
+  {
+    title: 'Día Regular — Con Recargo (×1.75)',
+    rows: [
+      { code: 'SDiuRc', label: 'ST Diurno DiaNor Rec', factor: BASE.diurno * RECARGO },
+      { code: 'SMixRc', label: 'ST Mixto DiaNor Rec', factor: BASE.mixto * RECARGO },
+      { code: 'SNocRc', label: 'ST Nocturno DiaNor Rec', factor: BASE.nocturno * RECARGO },
+    ],
+  },
+  {
+    title: 'Día de Descanso — Sin Recargo',
+    rows: [
+      { code: 'SDiuDom', label: 'ST Diurno DiaDes', factor: BASE.diurno * DESCANSO },
+      { code: 'SMixDom', label: 'ST Mixto DiaDes', factor: BASE.mixto * DESCANSO },
+      { code: 'SNocDom', label: 'ST Nocturno DiaDes', factor: BASE.nocturno * DESCANSO },
+    ],
+  },
+  {
+    title: 'Día de Descanso — Con Recargo (×1.75)',
+    rows: [
+      { code: 'SDiuDomRc', label: 'ST Diurno DiaDes Rec', factor: BASE.diurno * DESCANSO * RECARGO },
+      { code: 'SMixDomRc', label: 'ST Mixto DiaDes Rec', factor: BASE.mixto * DESCANSO * RECARGO },
+      { code: 'SNocDomRc', label: 'ST Nocturno DiaDes Rec', factor: BASE.nocturno * DESCANSO * RECARGO },
+    ],
+  },
+  {
+    title: 'Feriado Nacional',
+    rows: [{ code: 'Feriado', label: 'ST Feriado Nacional', factor: 2.5 }],
+  },
+];
+
+export const OVERTIME_ROWS: OvertimeRow[] = OVERTIME_GROUPS.flatMap((g) => g.rows);
+
+/** Muestra el factor sin ceros sobrantes pero con dos decimales como mínimo (×1.25, ×2.1875). */
+export function formatFactor(factor: number): string {
+  const s = String(factor);
+  const decimals = s.includes('.') ? s.split('.')[1].length : 0;
+  return decimals < 2 ? factor.toFixed(2) : s;
+}
+
+export interface OvertimeLine extends OvertimeRow {
+  hrs: number;
+  monto: number;
+}
+
+export function calcOvertime(params: {
+  salarioMensual: number;
+  horas: Record<string, number>;
+}): { salarioHora: number; lineas: OvertimeLine[]; total: number } {
+  const salarioHora = hourlyRate(params.salarioMensual);
+  let total = 0;
+  const lineas: OvertimeLine[] = [];
+  for (const row of OVERTIME_ROWS) {
+    const hrs = toAmount(params.horas[row.code]);
+    const monto = salarioHora * row.factor * hrs;
+    total += monto;
+    if (hrs > 0) lineas.push({ ...row, hrs, monto: round2(monto) });
+  }
+  return { salarioHora, lineas, total: round2(total) };
+}
+
+// ------------------------------------------------------------
+// VACACIONES — Código de Trabajo, Art. 54
+// 30 días calendario por cada 11 meses trabajados.
+// Pago: (salario_mensual / 30) × días
+// ------------------------------------------------------------
 export function calcVacation(params: {
   salarioMensual: number;
   mesesTrabajados: number;
 }): { diasCorresponden: number; montoVacaciones: number } {
-  const diasCorresponden = parseFloat(((params.mesesTrabajados / 11) * 30).toFixed(2));
-  const montoVacaciones = parseFloat(((params.salarioMensual / 30) * diasCorresponden).toFixed(2));
+  const diasCorresponden = round2((params.mesesTrabajados / 11) * 30);
+  const montoVacaciones = round2((params.salarioMensual / 30) * diasCorresponden);
   return { diasCorresponden, montoVacaciones };
 }
 
-// ============================================================
-// DÉCIMO TERCER MES — Art. 43 del Código de Trabajo
-// 3 cuotas: Abril (ene-mar = 3 meses), Agosto (abr-jul = 4 meses),
-//           Diciembre (ago-nov = 4 meses)
-// Fórmula: (salario_mensual × meses_en_período) / 12
-// ============================================================
+// ------------------------------------------------------------
+// DÉCIMO TERCER MES — 3 cuotas
+// Abril (ene–mar = 3 meses), agosto (abr–jul = 4), diciembre (ago–nov = 4)
+// Fórmula: (salario_mensual × meses_del_período) / 12
+// ------------------------------------------------------------
+export const THIRTEENTH_QUOTAS = [
+  { id: 'abril', meses: 3, label: 'Cuota Abril (ene–mar, 3 meses)', option: 'Cuota Abril — 15 abr (cubre ene–mar = 3 meses)' },
+  { id: 'agosto', meses: 4, label: 'Cuota Agosto (abr–jul, 4 meses)', option: 'Cuota Agosto — 15 ago (cubre abr–jul = 4 meses)' },
+  { id: 'diciembre', meses: 4, label: 'Cuota Diciembre (ago–nov, 4 meses)', option: 'Cuota Diciembre — 15 dic (cubre ago–nov = 4 meses)' },
+] as const;
+
 export function calcThirteenth(params: {
   salarioMensual: number;
   mesesEnPeriodo: number;
 }): { montoDecimo: number; decimoMensualAcumulado: number } {
-  const decimoMensualAcumulado = parseFloat((params.salarioMensual / 12).toFixed(2));
-  const montoDecimo = parseFloat(((params.salarioMensual * params.mesesEnPeriodo) / 12).toFixed(2));
+  const decimoMensualAcumulado = round2(params.salarioMensual / 12);
+  const montoDecimo = round2((params.salarioMensual * params.mesesEnPeriodo) / 12);
   return { montoDecimo, decimoMensualAcumulado };
 }
 
-// ============================================================
-// LIQUIDACIÓN — Ley 44 de 1995 + Código de Trabajo
-// Prima antigüedad: 1 semana/año | Semana = (salario × 12) / 52
-// Preaviso: <2 años=1sem | 2-5=2sem | 5-10=4sem | >10=6sem
-// ============================================================
+// ------------------------------------------------------------
+// LIQUIDACIÓN (estimación)
+// Semana = (salario × 12) / 52
+// Prima de antigüedad: 1 semana por año COMPLETO trabajado
+// Preaviso: <2 años = 1 sem | 2–5 = 2 sem | 5–10 = 4 sem | ≥10 = 6 sem
+// ------------------------------------------------------------
 export function calcLiquidation(params: {
   salarioMensual: number;
   aniosTrabajados: number;
@@ -81,31 +175,17 @@ export function calcLiquidation(params: {
   const salarioSemanal = (params.salarioMensual * 12) / 52;
   const totalAnios = params.aniosTrabajados + params.mesesAdicionales / 12;
 
-  const primaAntiguedad = parseFloat((salarioSemanal * Math.floor(totalAnios)).toFixed(2));
-
-  const vacacionesProporcionales = parseFloat(
-    ((params.salarioMensual / 30) * params.diasVacacionesPendientes).toFixed(2)
-  );
-
-  const decimoProporcional = parseFloat(
-    ((params.salarioMensual * params.mesesDecimoPeriodoActual) / 12).toFixed(2)
-  );
+  const primaAntiguedad = round2(salarioSemanal * Math.floor(totalAnios));
+  const vacacionesProporcionales = round2((params.salarioMensual / 30) * params.diasVacacionesPendientes);
+  const decimoProporcional = round2((params.salarioMensual * params.mesesDecimoPeriodoActual) / 12);
 
   let semanasPreaviso = 1;
   if (totalAnios >= 10) semanasPreaviso = 6;
   else if (totalAnios >= 5) semanasPreaviso = 4;
   else if (totalAnios >= 2) semanasPreaviso = 2;
 
-  const montoPreaviso = parseFloat((salarioSemanal * semanasPreaviso).toFixed(2));
+  const montoPreaviso = round2(salarioSemanal * semanasPreaviso);
+  const total = round2(primaAntiguedad + vacacionesProporcionales + decimoProporcional + montoPreaviso);
 
-  const total = primaAntiguedad + vacacionesProporcionales + decimoProporcional + montoPreaviso;
-
-  return {
-    primaAntiguedad,
-    vacacionesProporcionales,
-    decimoProporcional,
-    montoPreaviso,
-    semanasPreaviso,
-    total: parseFloat(total.toFixed(2)),
-  };
+  return { primaAntiguedad, vacacionesProporcionales, decimoProporcional, montoPreaviso, semanasPreaviso, total };
 }

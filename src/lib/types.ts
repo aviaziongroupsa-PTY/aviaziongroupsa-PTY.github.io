@@ -19,12 +19,8 @@ export interface SiteContent {
     tagline: string;
     contactEmail: string;
     logoUrl: string;
+    symbolUrl: string;
   };
   quickLinks: QuickLink[];
   faq: FAQItem[];
-}
-
-export interface CalcResult {
-  label: string;
-  value: number;
 }

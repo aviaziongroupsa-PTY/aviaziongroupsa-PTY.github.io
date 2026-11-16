@@ -7,7 +7,6 @@ interface Props {
 }
 
 const { title, description } = Astro.props;
-const ogImage = '/og-image.png';
 ---
 
 <!DOCTYPE html>
@@ -20,20 +19,32 @@ const ogImage = '/og-image.png';
         No agregar "Disallow: /" en robots.txt — bloquear el rastreo impide
         que Google llegue a leer este noindex y deje de indexar el sitio. */}
     <meta name="robots" content="noindex, nofollow" />
+    <meta name="theme-color" content="#001C30" />
     <meta property="og:title" content={title} />
     <meta property="og:description" content={description} />
-    <meta property="og:image" content={ogImage} />
     <meta property="og:type" content="website" />
-    <meta name="twitter:card" content="summary_large_image" />
     <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
     <title>{title}</title>
+    {/* CSP por meta (GitHub Pages no permite cabeceras). 'unsafe-eval' lo exige Alpine v3.
+        No hay 'unsafe-inline' en script-src: no uses onclick/onmouseover ni <script> en línea. */}
     <meta
       http-equiv="Content-Security-Policy"
-      content="default-src 'none'; script-src 'self' 'unsafe-eval' https://cdn.jsdelivr.net; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; font-src 'self' https://fonts.gstatic.com; img-src 'self' data:; connect-src 'none'; base-uri 'self'; form-action https://forms.gle https://docs.google.com https://forms.microsoft.com;"
+      content="default-src 'none'; script-src 'self' 'unsafe-eval' https://cdn.jsdelivr.net; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; font-src 'self' https://fonts.gstatic.com; img-src 'self' data:; connect-src 'none'; base-uri 'self'; form-action 'none';"
     />
     <meta name="referrer" content="strict-origin-when-cross-origin" />
-    <meta http-equiv="Permissions-Policy" content="camera=(), microphone=(), geolocation=(), payment=()" />
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      rel="stylesheet"
+      href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;600;700&family=Space+Grotesk:wght@400;500;600;700&display=swap"
+    />
+    {/* Orden obligatorio: primero el módulo que registra las calculadoras (escucha alpine:init),
+        después Alpine. Ambos son diferidos y se ejecutan en el orden del documento. */}
+    <script>
+      import '../../scripts/calculators';
+    </script>
     <script
+      is:inline
       defer
       src="https://cdn.jsdelivr.net/npm/alpinejs@3.14.9/dist/cdn.min.js"
       integrity="sha384-9Ax3MmS9AClxJyd5/zafcXXjxmwFhZCdsT6HJoJjarvCaAkJlk5QDzjLJm+Wdx5F"

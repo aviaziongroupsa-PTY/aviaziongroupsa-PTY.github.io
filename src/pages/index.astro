@@ -6,15 +6,18 @@ import Hero from '../components/sections/Hero.astro';
 import QuickLinks from '../components/sections/QuickLinks.astro';
 import Calculators from '../components/sections/Calculators.astro';
 import FAQ from '../components/sections/FAQ.astro';
-import content from '../../content/content.json';
+import rawContent from '../../content/content.json';
+import type { SiteContent } from '../lib/types';
+
+const content: SiteContent = rawContent;
 ---
 
 <BaseLayout title={content.site.name} description={content.site.tagline}>
-  <Header logo={content.site.logoUrl} />
+  <Header symbol={content.site.symbolUrl} />
   <main id="main-content">
     <Hero site={content.site} />
     <QuickLinks links={content.quickLinks} />
-    <section id="calculadoras"><Calculators /></section>
+    <Calculators />
     <FAQ items={content.faq} />
   </main>
   <Footer email={content.site.contactEmail} />
