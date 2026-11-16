@@ -10,10 +10,12 @@ Portal de Recursos Humanos para Aviazion Group Panamá — accesos rápidos a fo
 
 1. Ir a GitHub → archivo `content/content.json`
 2. Clic en el ícono de lápiz (editar)
-3. Cambiar el valor de `"url"` al link real de Google Forms
+3. Cambiar el valor de `"url"` al link real del formulario (Google Forms, Microsoft Forms, etc.)
 4. Clic en **"Commit changes"**
 
 El sitio se actualiza automáticamente en 2–3 minutos.
+
+Si un acceso todavía no tiene link, deja `"url": ""`: la tarjeta se muestra como **Próximamente** y no lleva a ningún lado. Nunca publiques un link de relleno.
 
 ---
 
@@ -48,7 +50,7 @@ En `content/content.json`, agregar un nuevo objeto al array `"quickLinks"`:
 }
 ```
 
-Íconos disponibles: `user-plus`, `clock`, `file-text`, `dollar-sign`, `briefcase`, `receipt`, `calendar`.
+Íconos disponibles: `user-plus`, `clock`, `file-text`, `dollar-sign`, `briefcase`, `receipt`, `calendar`, `help-circle`, `person-document`, `handshake`, `wrench`.
 
 ---
 
@@ -56,6 +58,11 @@ En `content/content.json`, agregar un nuevo objeto al array `"quickLinks"`:
 
 ```bash
 npm run dev      # Servidor local en http://localhost:4321
+npm test         # Pruebas de las calculadoras
 npm run build    # Build de producción (output en ./dist/)
 npm run preview  # Preview del build
 ```
+
+Un push a `main` publica en producción: el workflow corre las pruebas, compila y despliega a GitHub Pages.
+
+Las fórmulas de las calculadoras viven solo en `src/lib/calculations.ts` y sus casos de prueba en `tests/calculations.test.ts`.
