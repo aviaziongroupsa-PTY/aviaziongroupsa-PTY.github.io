@@ -72,7 +72,7 @@
     {
       "id": 5,
       "question": "¿Cuándo aplica el recargo en las horas extras?",
-      "answer": "Según la Ley 44 de 1995 (Art. 26), el recargo multiplica por 1.75 el factor de la hora extra y aplica desde la 3.ª hora diaria de sobretiempo o desde la 9.ª hora semanal acumulada, lo que ocurra primero. Por ejemplo, si un día haces 4 horas extra diurnas, las 2 primeras se pagan a ×1.25 y la 3.ª y la 4.ª a ×2.1875 (1.25 × 1.75)."
+      "answer": "Según la Ley 44 de 1995 (Art. 26), el recargo multiplica por 1.75 el factor de la hora extra y aplica a las horas de sobretiempo que excedan de 3 diarias o de 9 semanales; es decir, desde la 4.ª hora extra del día o desde la 10.ª de la semana, lo que ocurra primero. Por ejemplo, si un día haces 5 horas extra diurnas, las 3 primeras se pagan a ×1.25 y la 4.ª y la 5.ª a ×2.1875 (1.25 × 1.75)."
     },
     {
       "id": 6,
