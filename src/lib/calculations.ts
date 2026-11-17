@@ -23,6 +23,11 @@ export function toAmount(value: unknown): number {
   return Number.isFinite(n) && n > 0 ? n : 0;
 }
 
+/** B/. con separador de miles y dos decimales: B/. 12,345.67 */
+export function formatMoney(n: unknown): string {
+  return 'B/. ' + (Number(n) || 0).toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 });
+}
+
 export function hourlyRate(salarioMensual: number): number {
   return salarioMensual / HORAS_MES;
 }
@@ -110,15 +115,14 @@ export function calcOvertime(params: {
   horas: Record<string, number>;
 }): { salarioHora: number; lineas: OvertimeLine[]; total: number } {
   const salarioHora = hourlyRate(params.salarioMensual);
-  let total = 0;
-  const lineas: OvertimeLine[] = [];
-  for (const row of OVERTIME_ROWS) {
+  const lineas: OvertimeLine[] = OVERTIME_ROWS.map((row) => {
     const hrs = toAmount(params.horas[row.code]);
-    const monto = salarioHora * row.factor * hrs;
-    total += monto;
-    if (hrs > 0) lineas.push({ ...row, hrs, monto: round2(monto) });
-  }
-  return { salarioHora, lineas, total: round2(total) };
+    return { ...row, hrs, monto: round2(salarioHora * row.factor * hrs) };
+  }).filter((l) => l.hrs > 0);
+  // El total es la suma de las líneas ya redondeadas, para que el desglose
+  // que ve la persona sume exactamente el total.
+  const total = round2(lineas.reduce((sum, l) => sum + l.monto, 0));
+  return { salarioHora, lineas, total };
 }
 
 // ------------------------------------------------------------
@@ -156,42 +160,36 @@ export function calcThirteenth(params: {
 }
 
 // ------------------------------------------------------------
-// LIQUIDACIÓN (estimación)
+// LIQUIDACIÓN (estimación) — Código de Trabajo (texto de la Ley 44 de 1995)
+// Mismas reglas que el portal de LAATS (Contexto-IA, laats/portal-rrhh,
+// propuesta-liquidacion-2026-11-17.md). Es una referencia general: el cálculo
+// real lo hace RRHH.
 // Semana = (salario × 12) / 52
-// Prima de antigüedad: 1 semana por año, PROPORCIONAL a la fracción de año
-//   (3 años y 6 meses = 3.5 semanas). Se paga en cualquier motivo de salida.
-// Preaviso: <2 años = 1 sem | 2–5 = 2 sem | 5–10 = 4 sem | ≥10 = 6 sem.
-//   Solo se suma cuando el motivo de salida lo incluye (LIQUIDATION_REASONS).
-// La indemnización por despido injustificado NO se calcula aquí: la nota del
-//   motivo lo avisa.
+// Prima de antigüedad (arts. 224 y 226): 1 semana por año, proporcional a la
+//   fracción de año. Solo contrato por tiempo indefinido, en cualquier motivo
+//   de salida.
+// Indemnización por despido injustificado (art. 225-C): 3.4 semanas por año
+//   en los primeros 10 años y 1 semana por año desde el 11, proporcional.
+//   Solo contrato indefinido.
+// La ley no prevé una escala de preaviso por antigüedad a favor del
+//   trabajador; por eso no se calcula.
 // ------------------------------------------------------------
-export const LIQUIDATION_REASONS = [
-  {
-    id: 'renuncia',
-    label: 'Renuncia',
-    preaviso: false,
-    nota: 'En una renuncia no se suma preaviso ni indemnización.',
-  },
-  {
-    id: 'mutuo',
-    label: 'Mutuo acuerdo',
-    preaviso: false,
-    nota: 'En un mutuo acuerdo no se suma preaviso ni indemnización; cualquier monto adicional depende de lo que se pacte.',
-  },
-  {
-    id: 'justificado',
-    label: 'Despido justificado',
-    preaviso: false,
-    nota: 'En un despido justificado no se suma preaviso ni indemnización.',
-  },
-  {
-    id: 'injustificado',
-    label: 'Despido injustificado',
-    preaviso: true,
-    nota: 'Incluye el preaviso. No incluye la indemnización por despido injustificado: ese monto lo calcula RRHH según tu antigüedad.',
-  },
+export const INDEMNITY_WEEKS_FIRST_10_YEARS = 3.4;
+export const INDEMNITY_WEEKS_AFTER_10_YEARS = 1;
+
+export const LIQUIDATION_CONTRACTS = [
+  { id: 'indefinido', label: 'Tiempo indefinido' },
+  { id: 'definido', label: 'Tiempo definido' },
 ] as const;
 
+export const LIQUIDATION_REASONS = [
+  { id: 'renuncia', label: 'Renuncia', indemnizacion: false },
+  { id: 'mutuo', label: 'Mutuo acuerdo', indemnizacion: false },
+  { id: 'justificado', label: 'Despido justificado', indemnizacion: false },
+  { id: 'injustificado', label: 'Despido injustificado', indemnizacion: true },
+] as const;
+
+export type LiquidationContractId = (typeof LIQUIDATION_CONTRACTS)[number]['id'];
 export type LiquidationReasonId = (typeof LIQUIDATION_REASONS)[number]['id'];
 
 export function calcLiquidation(params: {
@@ -200,34 +198,28 @@ export function calcLiquidation(params: {
   mesesAdicionales: number;
   diasVacacionesPendientes: number;
   mesesDecimoPeriodoActual: number;
+  contrato: LiquidationContractId;
   motivo: LiquidationReasonId;
 }): {
   primaAntiguedad: number;
+  indemnizacion: number;
   vacacionesProporcionales: number;
   decimoProporcional: number;
-  incluyePreaviso: boolean;
-  montoPreaviso: number;
-  semanasPreaviso: number;
   total: number;
 } {
   const salarioSemanal = (params.salarioMensual * 12) / 52;
   const totalAnios = params.aniosTrabajados + params.mesesAdicionales / 12;
+  const indefinido = params.contrato === 'indefinido';
+  const injustificado = LIQUIDATION_REASONS.find((r) => r.id === params.motivo)?.indemnizacion ?? false;
 
-  const primaAntiguedad = round2(salarioSemanal * totalAnios);
+  const primaAntiguedad = indefinido ? round2(salarioSemanal * totalAnios) : 0;
+  const semanasIndemnizacion =
+    INDEMNITY_WEEKS_FIRST_10_YEARS * Math.min(totalAnios, 10) +
+    INDEMNITY_WEEKS_AFTER_10_YEARS * Math.max(totalAnios - 10, 0);
+  const indemnizacion = indefinido && injustificado ? round2(salarioSemanal * semanasIndemnizacion) : 0;
   const vacacionesProporcionales = round2((params.salarioMensual / 30) * params.diasVacacionesPendientes);
   const decimoProporcional = round2((params.salarioMensual * params.mesesDecimoPeriodoActual) / 12);
+  const total = round2(primaAntiguedad + indemnizacion + vacacionesProporcionales + decimoProporcional);
 
-  const incluyePreaviso = LIQUIDATION_REASONS.find((r) => r.id === params.motivo)?.preaviso ?? false;
-  let semanasPreaviso = 0;
-  if (incluyePreaviso) {
-    semanasPreaviso = 1;
-    if (totalAnios >= 10) semanasPreaviso = 6;
-    else if (totalAnios >= 5) semanasPreaviso = 4;
-    else if (totalAnios >= 2) semanasPreaviso = 2;
-  }
-
-  const montoPreaviso = round2(salarioSemanal * semanasPreaviso);
-  const total = round2(primaAntiguedad + vacacionesProporcionales + decimoProporcional + montoPreaviso);
-
-  return { primaAntiguedad, vacacionesProporcionales, decimoProporcional, incluyePreaviso, montoPreaviso, semanasPreaviso, total };
+  return { primaAntiguedad, indemnizacion, vacacionesProporcionales, decimoProporcional, total };
 }

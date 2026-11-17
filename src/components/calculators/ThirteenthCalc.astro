@@ -2,7 +2,7 @@
 import { THIRTEENTH_QUOTAS } from '../../lib/calculations';
 ---
 
-<div x-data="thirteenthCalc" class="space-y-6">
+<div x-data="thirteenthCalc" x-on:input="invalidar()" class="space-y-6">
   <p class="calc-note">
     Art. 43 CT — 3 cuotas anuales. Fórmula: (salario × meses del período) ÷ 12.
     Pagadero el 15 de abril, 15 de agosto y 15 de diciembre.
@@ -18,7 +18,7 @@ import { THIRTEENTH_QUOTAS } from '../../lib/calculations';
     </div>
     <div>
       <label class="field-label" for="dec-cuota">Cuota a calcular</label>
-      <select id="dec-cuota" x-model="cuota" x-on:change="resultado = null" class="field">
+      <select id="dec-cuota" x-model="cuota" x-on:change="invalidar()" class="field">
         {THIRTEENTH_QUOTAS.map((q) => <option value={q.id}>{q.option}</option>)}
       </select>
       <p class="text-xs text-[var(--color-muted)] mt-1">

@@ -4,6 +4,7 @@
 // Este módulo se carga ANTES que el script de Alpine en BaseLayout.astro: Alpine
 // dispara `alpine:init` al arrancar y los componentes deben estar ya registrados.
 import {
+  LIQUIDATION_CONTRACTS,
   LIQUIDATION_REASONS,
   OVERTIME_GROUPS,
   OVERTIME_ROWS,
@@ -13,13 +14,14 @@ import {
   calcThirteenth,
   calcVacation,
   formatFactor,
+  formatMoney,
   hourlyRate,
   toAmount,
 } from '../lib/calculations';
 
 const SIN_SALARIO = 'Escribe tu salario mensual para calcular.';
 
-const money = (n: unknown) => 'B/. ' + (Number(n) || 0).toFixed(2);
+const money = formatMoney;
 
 document.addEventListener('alpine:init', () => {
   const Alpine = (window as any).Alpine;
@@ -31,6 +33,11 @@ document.addEventListener('alpine:init', () => {
     horas: Object.fromEntries(OVERTIME_ROWS.map((r) => [r.code, 0])) as Record<string, number | string>,
     resultado: null as ReturnType<typeof calcOvertime> | null,
     error: '',
+    // Al editar un dato, el resultado anterior deja de valer: se borra.
+    invalidar() {
+      this.resultado = null;
+      this.error = '';
+    },
     // Grupos de la tabla desplegados: solo el primero abre al cargar.
     abiertos: OVERTIME_GROUPS.map((_, i) => i === 0),
     horasEnGrupo(codes: string[]) {
@@ -65,6 +72,11 @@ document.addEventListener('alpine:init', () => {
     meses: 11,
     resultado: null as ReturnType<typeof calcVacation> | null,
     error: '',
+    // Al editar un dato, el resultado anterior deja de valer: se borra.
+    invalidar() {
+      this.resultado = null;
+      this.error = '';
+    },
     calcular() {
       const salarioMensual = toAmount(this.salario);
       if (salarioMensual <= 0) {
@@ -82,6 +94,11 @@ document.addEventListener('alpine:init', () => {
     cuota: THIRTEENTH_QUOTAS[0].id as string,
     resultado: null as (ReturnType<typeof calcThirteenth> & { meses: number }) | null,
     error: '',
+    // Al editar un dato, el resultado anterior deja de valer: se borra.
+    invalidar() {
+      this.resultado = null;
+      this.error = '';
+    },
     get quota() {
       return THIRTEENTH_QUOTAS.find((q) => q.id === this.cuota) ?? THIRTEENTH_QUOTAS[0];
     },
@@ -114,9 +131,15 @@ document.addEventListener('alpine:init', () => {
     mesesAdicionales: 0,
     diasVacaciones: 0,
     mesesDecimo: 0,
+    contrato: LIQUIDATION_CONTRACTS[0].id as string,
     motivo: LIQUIDATION_REASONS[0].id as string,
-    resultado: null as (ReturnType<typeof calcLiquidation> & { motivoLabel: string; nota: string }) | null,
+    resultado: null as (ReturnType<typeof calcLiquidation> & { motivoLabel: string; indefinido: boolean; conIndemnizacion: boolean }) | null,
     error: '',
+    // Al editar un dato, el resultado anterior deja de valer: se borra.
+    invalidar() {
+      this.resultado = null;
+      this.error = '';
+    },
     calcular() {
       const salarioMensual = toAmount(this.salario);
       if (salarioMensual <= 0) {
@@ -125,8 +148,9 @@ document.addEventListener('alpine:init', () => {
         return;
       }
       this.error = '';
-      // El motivo queda fijado en el resultado: cambiar el selector no altera un cálculo ya mostrado.
       const reason = LIQUIDATION_REASONS.find((r) => r.id === this.motivo) ?? LIQUIDATION_REASONS[0];
+      const contract = LIQUIDATION_CONTRACTS.find((c) => c.id === this.contrato) ?? LIQUIDATION_CONTRACTS[0];
+      const indefinido = contract.id === 'indefinido';
       this.resultado = {
         ...calcLiquidation({
           salarioMensual,
@@ -134,10 +158,12 @@ document.addEventListener('alpine:init', () => {
           mesesAdicionales: toAmount(this.mesesAdicionales),
           diasVacacionesPendientes: toAmount(this.diasVacaciones),
           mesesDecimoPeriodoActual: toAmount(this.mesesDecimo),
+          contrato: contract.id,
           motivo: reason.id,
         }),
         motivoLabel: reason.label,
-        nota: reason.nota,
+        indefinido,
+        conIndemnizacion: indefinido && reason.indemnizacion,
       };
     },
   }));

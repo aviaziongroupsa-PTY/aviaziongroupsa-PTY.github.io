@@ -1,14 +1,27 @@
 ---
-import { LIQUIDATION_REASONS } from '../../lib/calculations';
+import {
+  INDEMNITY_WEEKS_AFTER_10_YEARS,
+  INDEMNITY_WEEKS_FIRST_10_YEARS,
+  LIQUIDATION_CONTRACTS,
+  LIQUIDATION_REASONS,
+} from '../../lib/calculations';
 ---
 
-<div x-data="liquidationCalc" class="space-y-6">
+<div x-data="liquidationCalc" x-on:input="invalidar()" x-on:change="invalidar()" class="space-y-6">
   <p class="calc-note">
-    Ley 44 de 1995 + Código de Trabajo — Prima de antigüedad + Vacaciones pendientes + Décimo proporcional. El preaviso se suma según el <strong>motivo de salida</strong>.
+    Código de Trabajo, arts. 224 y 225 (Ley 44 de 1995) — Prima de antigüedad, indemnización, vacaciones y décimo tercer mes, según el <strong>tipo de contrato</strong> y el <strong>motivo de salida</strong>.
   </p>
 
   <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
-    <div class="sm:col-span-2">
+    <div>
+      <label class="field-label" for="liq-contrato">Tipo de contrato</label>
+      <select id="liq-contrato" x-model="contrato" class="field">
+        {LIQUIDATION_CONTRACTS.map((c, i) => (
+          <option value={c.id} selected={i === 0}>{c.label}</option>
+        ))}
+      </select>
+    </div>
+    <div>
       <label class="field-label" for="liq-motivo">Motivo de salida</label>
       <select id="liq-motivo" x-model="motivo" class="field">
         {LIQUIDATION_REASONS.map((r, i) => (
@@ -16,6 +29,9 @@ import { LIQUIDATION_REASONS } from '../../lib/calculations';
         ))}
       </select>
     </div>
+    <p class="sm:col-span-2 text-xs text-[var(--color-muted)]" x-show="contrato === 'definido'" style="display:none;">
+      En contratos por tiempo definido la ley no prevé prima de antigüedad ni indemnización por despido. Si tienes dudas sobre tu tipo de contrato, consulta con RRHH.
+    </p>
     <div>
       <label class="field-label" for="liq-salario">Salario mensual (B/.)</label>
       <input id="liq-salario" x-model="salario" type="number" inputmode="decimal" min="0" placeholder="Ej: 800" class="field" />
@@ -33,8 +49,8 @@ import { LIQUIDATION_REASONS } from '../../lib/calculations';
       <input id="liq-vac" x-model="diasVacaciones" type="number" inputmode="decimal" min="0" placeholder="0" class="field" />
     </div>
     <div class="sm:col-span-2">
-      <label class="field-label" for="liq-decimo">Meses de décimo sin cobrar (año actual)</label>
-      <input id="liq-decimo" x-model="mesesDecimo" type="number" inputmode="numeric" min="0" max="11" placeholder="0" class="field" />
+      <label class="field-label" for="liq-decimo">Meses de décimo sin cobrar (período actual)</label>
+      <input id="liq-decimo" x-model="mesesDecimo" type="number" inputmode="numeric" min="0" max="4" placeholder="0" class="field" />
     </div>
   </div>
 
@@ -46,9 +62,13 @@ import { LIQUIDATION_REASONS } from '../../lib/calculations';
   <div x-show="resultado" x-transition class="result space-y-3" style="display:none;" aria-live="polite">
     <h3 class="result-title">Desglose de liquidación — <span x-text="resultado?.motivoLabel"></span></h3>
     <div class="space-y-2 text-sm">
-      <div class="flex flex-wrap justify-between gap-x-4">
-        <span class="text-[var(--color-muted)]">Prima de antigüedad (1 sem/año, proporcional):</span>
+      <div class="flex flex-wrap justify-between gap-x-4" x-show="resultado?.indefinido">
+        <span class="text-[var(--color-muted)]">Prima de antigüedad (1 semana por año, proporcional):</span>
         <span class="font-mono font-semibold text-[var(--color-text)]" x-text="$money(resultado?.primaAntiguedad)"></span>
+      </div>
+      <div class="flex flex-wrap justify-between gap-x-4" x-show="resultado?.conIndemnizacion" style="display:none;">
+        <span class="text-[var(--color-muted)]">Indemnización ({INDEMNITY_WEEKS_FIRST_10_YEARS} semanas por año hasta 10 años; {INDEMNITY_WEEKS_AFTER_10_YEARS} después):</span>
+        <span class="font-mono font-semibold text-[var(--color-text)]" x-text="$money(resultado?.indemnizacion)"></span>
       </div>
       <div class="flex flex-wrap justify-between gap-x-4">
         <span class="text-[var(--color-muted)]">Vacaciones proporcionales:</span>
@@ -58,18 +78,16 @@ import { LIQUIDATION_REASONS } from '../../lib/calculations';
         <span class="text-[var(--color-muted)]">Décimo proporcional:</span>
         <span class="font-mono font-semibold text-[var(--color-text)]" x-text="$money(resultado?.decimoProporcional)"></span>
       </div>
-      <div class="flex flex-wrap justify-between gap-x-4" x-show="resultado?.incluyePreaviso">
-        <span class="text-[var(--color-muted)]">Preaviso (<span x-text="resultado?.semanasPreaviso"></span> sem.):</span>
-        <span class="font-mono font-semibold text-[var(--color-text)]" x-text="$money(resultado?.montoPreaviso)"></span>
-      </div>
     </div>
     <div class="result-divider pt-4 flex flex-wrap justify-between items-center gap-x-4">
       <span class="result-total-label text-lg">Total estimado:</span>
       <span class="result-total text-3xl" x-text="$money(resultado?.total)"></span>
     </div>
-    <p class="calc-note" x-text="resultado?.nota"></p>
+    <p class="calc-note">
+      No incluye salarios pendientes, deducciones (Seguro Social, impuesto sobre la renta), preaviso ni recargos por proceso judicial. La ley calcula la prima y la indemnización sobre promedios de salario (últimos 5 años y últimos 6 meses), por lo que con sobretiempos el monto cambia.
+    </p>
     <p class="disclaimer">
-      <strong>Esta es una estimación de referencia.</strong> El monto real dependerá de los salarios efectivamente devengados, incluyendo sobretiempos, recargos y otros ingresos variables. Para el cálculo oficial, consulte con el departamento de RRHH.
+      <strong>Esta es una estimación de referencia.</strong> El monto real dependerá de los salarios efectivamente devengados, incluyendo sobretiempos, recargos y otros ingresos variables. Para el cálculo oficial, consulta con el departamento de RRHH.
     </p>
   </div>
 </div>
