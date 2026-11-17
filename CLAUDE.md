@@ -1,6 +1,6 @@
 # Portal RRHH Aviazion Group
 
-Sitio estático de recursos humanos para Aviazion Group Panamá. Construido con Astro 6 + Tailwind CSS v4 + Alpine.js (CDN). Sin base de datos, sin backend, sin auth. Deploy automático a GitHub Pages via GitHub Actions.
+Sitio estático de recursos humanos para Aviazion Group Panamá. Construido con Astro 7 + Tailwind CSS v4 + Alpine.js (build CSP, CDN). Sin base de datos, sin backend, sin auth. Deploy automático a GitHub Pages via GitHub Actions.
 
 **URL de producción:** https://aviaziongroupsa-pty.github.io
 
@@ -16,7 +16,7 @@ Sitio estático de recursos humanos para Aviazion Group Panamá. Construido con 
 
 ## Tech Stack
 
-Astro 6 (static) + TypeScript (strict) + Tailwind CSS v4 + Alpine.js v3.14.9 (CDN) + GitHub Pages
+Astro 7 (static) + TypeScript (strict) + Tailwind CSS v4 + Alpine.js v3.17.5 build CSP (`@alpinejs/csp`, CDN) + GitHub Pages. Portal gemelo: `laats-panama-rrhh` (mismo stack); una mejora en uno suele valer para el otro.
 
 ## REGLA FUNDAMENTAL: Jornada 6×1 / 208 horas
 
@@ -49,7 +49,9 @@ Campos de la calculadora → componente Alpine (`src/scripts/calculators.ts`) �
 ### Key Patterns
 - Links y FAQs vienen de content.json. Los títulos de sección y los textos de las calculadoras viven en sus componentes.
 - Las fórmulas viven SOLO en calculations.ts. Si cambias una, actualiza o agrega su caso en tests/.
-- Alpine.js se carga via CDN con SRI (integrity hash) — no instalar el paquete npm
+- Alpine.js se carga via CDN con SRI (integrity hash) — no instalar el paquete npm. Es el **build CSP**: en las plantillas no uses `?.`, `??`, `window` ni objetos en `x-data`; el estado va en `Alpine.data()` (`src/scripts/calculators.ts`) y las plantillas leen el resultado con el getter `r`.
+- Al editar cualquier campo, la calculadora borra su resultado (`invalidar()`), para no mostrar un monto viejo junto a datos nuevos.
+- Los montos se formatean con `formatMoney` (`B/. 12,345.67`).
 - En BaseLayout el módulo de calculadoras va ANTES del script de Alpine (escucha `alpine:init`).
 - Cada sección tiene ID de anchor para smooth scroll desde el nav
 - Las calculadoras son un acordeón: todas cerradas al cargar y una abierta a la vez. En Sobretiempos cada grupo de la tabla se despliega por separado (solo el primero abre al cargar) y un grupo cerrado con horas las muestra en su encabezado.
@@ -60,19 +62,19 @@ Campos de la calculadora → componente Alpine (`src/scripts/calculators.ts`) �
 ## Security
 
 ### Content Security Policy (meta tag en BaseLayout.astro)
-- `'unsafe-eval'` es requerido: Alpine.js v3 usa `new Function()` internamente.
-- NO hay `'unsafe-inline'` en `script-src`: los atributos `onclick`/`onmouseover` y los `<script>` en línea se bloquean. Usa CSS (`:hover`) o directivas Alpine. `astro.config.mjs` fija `assetsInlineLimit: 0` para que los scripts salgan siempre como archivo.
+- `script-src 'self' https://cdn.jsdelivr.net`, **sin `'unsafe-eval'`** (build CSP de Alpine) y sin `'unsafe-inline'`: los atributos `onclick`/`onmouseover` y los `<script>` en línea se bloquean. Usa CSS (`:hover`) o directivas Alpine. `astro.config.mjs` fija `assetsInlineLimit: 0` para que los scripts salgan siempre como archivo.
+- Fuentes alojadas en el propio sitio (`@fontsource-variable`): la CSP no admite orígenes externos de estilos ni fuentes.
 - GitHub Pages no permite cabeceras HTTP: `frame-ancestors` y `Permissions-Policy` no se pueden aplicar por `<meta>`.
 
 ### Alpine.js CDN con SRI
 ```html
-<script src="https://cdn.jsdelivr.net/npm/alpinejs@3.14.9/dist/cdn.min.js"
-  integrity="sha384-9Ax3MmS9AClxJyd5/zafcXXjxmwFhZCdsT6HJoJjarvCaAkJlk5QDzjLJm+Wdx5F"
+<script src="https://cdn.jsdelivr.net/npm/@alpinejs/csp@3.17.5/dist/cdn.min.js"
+  integrity="sha384-Q4UOujiwqAb/jTt3ki4pdkETk4I3rIFQX8h271PLI41okj/YIKY7IQQFMw73wkrX"
   crossorigin="anonymous" defer></script>
 ```
 
 ### GitHub Actions — SHAs fijos
-Todos los `uses:` en deploy.yml usan SHA completo, no tags mutables.
+Todos los `uses:` en deploy.yml usan SHA completo, no tags mutables. En pull requests el workflow solo compila y corre las pruebas; publica únicamente en push a `main`.
 
 ## Design System
 
@@ -91,7 +93,7 @@ Tema oscuro único. Fuente de verdad de marca: Kit de Marca de Aviazion Group v1
 - `public/logo-aviazion-negativo.svg` (hero) y `public/logo-aviazion-simbolo-blanco.svg` (encabezado, favicon): archivos oficiales del kit. No estirar, recolorear, ponerle caja ni brillo; logo completo ≥ 100 px de ancho.
 
 ### Typography
-- Space Grotesk (texto y títulos) y JetBrains Mono (montos), desde Google Fonts.
+- Space Grotesk (texto y títulos) y JetBrains Mono (montos), alojadas en el sitio con `@fontsource-variable`.
 - La tipografía oficial de la marca es Century Gothic (de pago, no se puede servir en web). Adoptarla o elegir un sustituto es una decisión pendiente de Josué.
 
 ## Ley Laboral Panameña (referencia)
@@ -99,14 +101,14 @@ Tema oscuro único. Fuente de verdad de marca: Kit de Marca de Aviazion Group v1
 - **Sobretiempo** — Base hora = salario_mensual / 208 (NO 240). Factores vigentes en la calculadora (`OVERTIME_GROUPS`): diurno ×1.25, mixto ×1.50, nocturno ×1.75; recargo por exceso ×1.75 sobre la base; día de descanso ×1.50 sobre la base; feriado nacional ×2.50.
 - **Vacaciones** — Código de Trabajo Art. 54: 30 días por 11 meses trabajados
 - **Décimo tercer mes** — Art. 43 CT: 3 cuotas (abril/agosto/diciembre)
-- **Liquidación** — Prima: 1 sem/año, proporcional a la fracción de año, en cualquier motivo de salida. El selector de motivo (`LIQUIDATION_REASONS`) decide si se suma preaviso: solo en despido injustificado (<2=1sem, 2-5=2sem, 5-10=4sem, ≥10=6sem). La indemnización no se calcula; la nota del motivo lo avisa.
+- **Liquidación** — Mismas reglas que el portal de LAATS (Contexto-IA `laats/portal-rrhh/propuesta-liquidacion-2026-11-17.md`): prima de 1 semana por año, proporcional, solo en contrato indefinido; indemnización de 3.4 semanas por año hasta 10 años y 1 después, solo en despido injustificado con contrato indefinido; sin preaviso (la escala 1/2/4/6 no existe en el Código). Es una referencia general: el cálculo real lo hace RRHH.
 
 ## Reglas No Negociables
 
 1. **BASE 208H: nunca 240.** salarioMensual/208 en todos los cálculos.
 2. **content.json como única fuente de verdad de links y FAQs.**
 3. **Mobile-first sin excepciones.** Verificar a 360 px sin desborde horizontal y con objetivos táctiles ≥ 44 px.
-4. **Sin dependencias innecesarias.** El proyecto tiene 3 dependencias npm; las pruebas usan `node --test`.
+4. **Sin dependencias innecesarias.** El proyecto tiene 5 dependencias npm (Astro, Tailwind y su plugin, y las dos fuentes); las pruebas usan `node --test`.
 5. **Alpine.js solo via CDN con SRI.** Nunca instalar como paquete npm.
 6. **SHAs fijos en GitHub Actions.** Nunca usar tags mutables.
 7. **Una sola implementación de cada fórmula** (calculations.ts) y `npm test` en verde antes de fusionar.
