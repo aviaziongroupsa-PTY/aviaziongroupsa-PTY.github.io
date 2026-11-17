@@ -5,6 +5,7 @@ import assert from 'node:assert/strict';
 import {
   HORAS_MES,
   OVERTIME_ROWS,
+  LIQUIDATION_REASONS,
   calcLiquidation,
   calcOvertime,
   calcThirteenth,
@@ -92,34 +93,53 @@ test('décimo: cuota de 3 y de 4 meses; las tres suman 11/12 del salario', () =>
   assert.equal(calcThirteenth({ salarioMensual: 800, mesesEnPeriodo: 4 }).montoDecimo, 266.67);
 });
 
-test('liquidación: 3 años y 6 meses, B/. 1,300', () => {
-  const r = calcLiquidation({
-    salarioMensual: 1300,
+const liq = (extra: Partial<Parameters<typeof calcLiquidation>[0]> = {}) =>
+  calcLiquidation({
+    salarioMensual: 1300, // semana = 1300×12/52 = 300
     aniosTrabajados: 3,
     mesesAdicionales: 6,
     diasVacacionesPendientes: 15,
     mesesDecimoPeriodoActual: 2,
+    motivo: 'renuncia',
+    ...extra,
   });
-  // semana = 1300×12/52 = 300
-  assert.deepEqual(r, {
-    primaAntiguedad: 900,
+
+test('liquidación: prima proporcional a la fracción de año (3 años y 6 meses = 3.5 semanas)', () => {
+  assert.equal(liq().primaAntiguedad, 1050);
+  assert.equal(liq({ mesesAdicionales: 0 }).primaAntiguedad, 900);
+  assert.equal(liq({ aniosTrabajados: 0, mesesAdicionales: 6 }).primaAntiguedad, 150);
+  assert.equal(liq({ aniosTrabajados: 0, mesesAdicionales: 0 }).primaAntiguedad, 0);
+});
+
+test('liquidación: renuncia, mutuo acuerdo y despido justificado no suman preaviso', () => {
+  for (const motivo of ['renuncia', 'mutuo', 'justificado'] as const) {
+    assert.deepEqual(liq({ motivo }), {
+      primaAntiguedad: 1050,
+      vacacionesProporcionales: 650,
+      decimoProporcional: 216.67,
+      incluyePreaviso: false,
+      montoPreaviso: 0,
+      semanasPreaviso: 0,
+      total: 1916.67,
+    });
+  }
+});
+
+test('liquidación: despido injustificado suma el preaviso', () => {
+  assert.deepEqual(liq({ motivo: 'injustificado' }), {
+    primaAntiguedad: 1050,
     vacacionesProporcionales: 650,
     decimoProporcional: 216.67,
+    incluyePreaviso: true,
     montoPreaviso: 600,
     semanasPreaviso: 2,
-    total: 2366.67,
+    total: 2516.67,
   });
 });
 
 test('liquidación: tramos de preaviso (1, 2, 4 y 6 semanas)', () => {
   const sem = (anios: number, meses = 0) =>
-    calcLiquidation({
-      salarioMensual: 1300,
-      aniosTrabajados: anios,
-      mesesAdicionales: meses,
-      diasVacacionesPendientes: 0,
-      mesesDecimoPeriodoActual: 0,
-    }).semanasPreaviso;
+    liq({ aniosTrabajados: anios, mesesAdicionales: meses, motivo: 'injustificado' }).semanasPreaviso;
   assert.equal(sem(0), 1);
   assert.equal(sem(1, 11), 1);
   assert.equal(sem(2), 2);
@@ -129,14 +149,9 @@ test('liquidación: tramos de preaviso (1, 2, 4 y 6 semanas)', () => {
   assert.equal(sem(10), 6);
 });
 
-test('liquidación: menos de un año no genera prima de antigüedad', () => {
-  const r = calcLiquidation({
-    salarioMensual: 1300,
-    aniosTrabajados: 0,
-    mesesAdicionales: 11,
-    diasVacacionesPendientes: 0,
-    mesesDecimoPeriodoActual: 0,
-  });
-  assert.equal(r.primaAntiguedad, 0);
-  assert.equal(r.total, 300);
+test('liquidación: cada motivo tiene etiqueta y nota; solo el despido injustificado lleva preaviso', () => {
+  assert.deepEqual(LIQUIDATION_REASONS.map((r) => [r.id, r.preaviso]), [
+    ['renuncia', false], ['mutuo', false], ['justificado', false], ['injustificado', true],
+  ]);
+  for (const r of LIQUIDATION_REASONS) assert.ok(r.label && r.nota);
 });

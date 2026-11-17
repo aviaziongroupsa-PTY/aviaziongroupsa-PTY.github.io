@@ -4,6 +4,7 @@
 // Este módulo se carga ANTES que el script de Alpine en BaseLayout.astro: Alpine
 // dispara `alpine:init` al arrancar y los componentes deben estar ya registrados.
 import {
+  LIQUIDATION_REASONS,
   OVERTIME_GROUPS,
   OVERTIME_ROWS,
   THIRTEENTH_QUOTAS,
@@ -113,7 +114,8 @@ document.addEventListener('alpine:init', () => {
     mesesAdicionales: 0,
     diasVacaciones: 0,
     mesesDecimo: 0,
-    resultado: null as ReturnType<typeof calcLiquidation> | null,
+    motivo: LIQUIDATION_REASONS[0].id as string,
+    resultado: null as (ReturnType<typeof calcLiquidation> & { motivoLabel: string; nota: string }) | null,
     error: '',
     calcular() {
       const salarioMensual = toAmount(this.salario);
@@ -123,13 +125,20 @@ document.addEventListener('alpine:init', () => {
         return;
       }
       this.error = '';
-      this.resultado = calcLiquidation({
-        salarioMensual,
-        aniosTrabajados: toAmount(this.anios),
-        mesesAdicionales: toAmount(this.mesesAdicionales),
-        diasVacacionesPendientes: toAmount(this.diasVacaciones),
-        mesesDecimoPeriodoActual: toAmount(this.mesesDecimo),
-      });
+      // El motivo queda fijado en el resultado: cambiar el selector no altera un cálculo ya mostrado.
+      const reason = LIQUIDATION_REASONS.find((r) => r.id === this.motivo) ?? LIQUIDATION_REASONS[0];
+      this.resultado = {
+        ...calcLiquidation({
+          salarioMensual,
+          aniosTrabajados: toAmount(this.anios),
+          mesesAdicionales: toAmount(this.mesesAdicionales),
+          diasVacacionesPendientes: toAmount(this.diasVacaciones),
+          mesesDecimoPeriodoActual: toAmount(this.mesesDecimo),
+          motivo: reason.id,
+        }),
+        motivoLabel: reason.label,
+        nota: reason.nota,
+      };
     },
   }));
 });

@@ -99,7 +99,7 @@ Tema oscuro único. Fuente de verdad de marca: Kit de Marca de Aviazion Group v1
 - **Sobretiempo** — Base hora = salario_mensual / 208 (NO 240). Factores vigentes en la calculadora (`OVERTIME_GROUPS`): diurno ×1.25, mixto ×1.50, nocturno ×1.75; recargo por exceso ×1.75 sobre la base; día de descanso ×1.50 sobre la base; feriado nacional ×2.50.
 - **Vacaciones** — Código de Trabajo Art. 54: 30 días por 11 meses trabajados
 - **Décimo tercer mes** — Art. 43 CT: 3 cuotas (abril/agosto/diciembre)
-- **Liquidación** — Prima: 1 sem/año. Preaviso: <2=1sem, 2-5=2sem, 5-10=4sem, >10=6sem
+- **Liquidación** — Prima: 1 sem/año, proporcional a la fracción de año, en cualquier motivo de salida. El selector de motivo (`LIQUIDATION_REASONS`) decide si se suma preaviso: solo en despido injustificado (<2=1sem, 2-5=2sem, 5-10=4sem, ≥10=6sem). La indemnización no se calcula; la nota del motivo lo avisa.
 
 ## Reglas No Negociables
 

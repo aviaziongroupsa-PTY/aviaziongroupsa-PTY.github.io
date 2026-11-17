@@ -1,9 +1,21 @@
+---
+import { LIQUIDATION_REASONS } from '../../lib/calculations';
+---
+
 <div x-data="liquidationCalc" class="space-y-6">
   <p class="calc-note">
-    Ley 44 de 1995 + Código de Trabajo — Prima de antigüedad + Vacaciones pendientes + Décimo proporcional + Preaviso
+    Ley 44 de 1995 + Código de Trabajo — Prima de antigüedad + Vacaciones pendientes + Décimo proporcional. El preaviso se suma según el <strong>motivo de salida</strong>.
   </p>
 
   <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+    <div class="sm:col-span-2">
+      <label class="field-label" for="liq-motivo">Motivo de salida</label>
+      <select id="liq-motivo" x-model="motivo" class="field">
+        {LIQUIDATION_REASONS.map((r, i) => (
+          <option value={r.id} selected={i === 0}>{r.label}</option>
+        ))}
+      </select>
+    </div>
     <div>
       <label class="field-label" for="liq-salario">Salario mensual (B/.)</label>
       <input id="liq-salario" x-model="salario" type="number" inputmode="decimal" min="0" placeholder="Ej: 800" class="field" />
@@ -32,10 +44,10 @@
   </div>
 
   <div x-show="resultado" x-transition class="result space-y-3" style="display:none;" aria-live="polite">
-    <h3 class="result-title">Desglose de liquidación</h3>
+    <h3 class="result-title">Desglose de liquidación — <span x-text="resultado?.motivoLabel"></span></h3>
     <div class="space-y-2 text-sm">
       <div class="flex flex-wrap justify-between gap-x-4">
-        <span class="text-[var(--color-muted)]">Prima de antigüedad (1 sem/año):</span>
+        <span class="text-[var(--color-muted)]">Prima de antigüedad (1 sem/año, proporcional):</span>
         <span class="font-mono font-semibold text-[var(--color-text)]" x-text="$money(resultado?.primaAntiguedad)"></span>
       </div>
       <div class="flex flex-wrap justify-between gap-x-4">
@@ -46,7 +58,7 @@
         <span class="text-[var(--color-muted)]">Décimo proporcional:</span>
         <span class="font-mono font-semibold text-[var(--color-text)]" x-text="$money(resultado?.decimoProporcional)"></span>
       </div>
-      <div class="flex flex-wrap justify-between gap-x-4">
+      <div class="flex flex-wrap justify-between gap-x-4" x-show="resultado?.incluyePreaviso">
         <span class="text-[var(--color-muted)]">Preaviso (<span x-text="resultado?.semanasPreaviso"></span> sem.):</span>
         <span class="font-mono font-semibold text-[var(--color-text)]" x-text="$money(resultado?.montoPreaviso)"></span>
       </div>
@@ -55,6 +67,7 @@
       <span class="result-total-label text-lg">Total estimado:</span>
       <span class="result-total text-3xl" x-text="$money(resultado?.total)"></span>
     </div>
+    <p class="calc-note" x-text="resultado?.nota"></p>
     <p class="disclaimer">
       <strong>Esta es una estimación de referencia.</strong> El monto real dependerá de los salarios efectivamente devengados, incluyendo sobretiempos, recargos y otros ingresos variables. Para el cálculo oficial, consulte con el departamento de RRHH.
     </p>

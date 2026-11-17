@@ -155,19 +155,54 @@ export function calcThirteenth(params: {
 // ------------------------------------------------------------
 // LIQUIDACIÓN (estimación)
 // Semana = (salario × 12) / 52
-// Prima de antigüedad: 1 semana por año COMPLETO trabajado
-// Preaviso: <2 años = 1 sem | 2–5 = 2 sem | 5–10 = 4 sem | ≥10 = 6 sem
+// Prima de antigüedad: 1 semana por año, PROPORCIONAL a la fracción de año
+//   (3 años y 6 meses = 3.5 semanas). Se paga en cualquier motivo de salida.
+// Preaviso: <2 años = 1 sem | 2–5 = 2 sem | 5–10 = 4 sem | ≥10 = 6 sem.
+//   Solo se suma cuando el motivo de salida lo incluye (LIQUIDATION_REASONS).
+// La indemnización por despido injustificado NO se calcula aquí: la nota del
+//   motivo lo avisa.
 // ------------------------------------------------------------
+export const LIQUIDATION_REASONS = [
+  {
+    id: 'renuncia',
+    label: 'Renuncia',
+    preaviso: false,
+    nota: 'En una renuncia no se suma preaviso ni indemnización.',
+  },
+  {
+    id: 'mutuo',
+    label: 'Mutuo acuerdo',
+    preaviso: false,
+    nota: 'En un mutuo acuerdo no se suma preaviso ni indemnización; cualquier monto adicional depende de lo que se pacte.',
+  },
+  {
+    id: 'justificado',
+    label: 'Despido justificado',
+    preaviso: false,
+    nota: 'En un despido justificado no se suma preaviso ni indemnización.',
+  },
+  {
+    id: 'injustificado',
+    label: 'Despido injustificado',
+    preaviso: true,
+    nota: 'Incluye el preaviso. No incluye la indemnización por despido injustificado: ese monto lo calcula RRHH según tu antigüedad.',
+  },
+] as const;
+
+export type LiquidationReasonId = (typeof LIQUIDATION_REASONS)[number]['id'];
+
 export function calcLiquidation(params: {
   salarioMensual: number;
   aniosTrabajados: number;
   mesesAdicionales: number;
   diasVacacionesPendientes: number;
   mesesDecimoPeriodoActual: number;
+  motivo: LiquidationReasonId;
 }): {
   primaAntiguedad: number;
   vacacionesProporcionales: number;
   decimoProporcional: number;
+  incluyePreaviso: boolean;
   montoPreaviso: number;
   semanasPreaviso: number;
   total: number;
@@ -175,17 +210,21 @@ export function calcLiquidation(params: {
   const salarioSemanal = (params.salarioMensual * 12) / 52;
   const totalAnios = params.aniosTrabajados + params.mesesAdicionales / 12;
 
-  const primaAntiguedad = round2(salarioSemanal * Math.floor(totalAnios));
+  const primaAntiguedad = round2(salarioSemanal * totalAnios);
   const vacacionesProporcionales = round2((params.salarioMensual / 30) * params.diasVacacionesPendientes);
   const decimoProporcional = round2((params.salarioMensual * params.mesesDecimoPeriodoActual) / 12);
 
-  let semanasPreaviso = 1;
-  if (totalAnios >= 10) semanasPreaviso = 6;
-  else if (totalAnios >= 5) semanasPreaviso = 4;
-  else if (totalAnios >= 2) semanasPreaviso = 2;
+  const incluyePreaviso = LIQUIDATION_REASONS.find((r) => r.id === params.motivo)?.preaviso ?? false;
+  let semanasPreaviso = 0;
+  if (incluyePreaviso) {
+    semanasPreaviso = 1;
+    if (totalAnios >= 10) semanasPreaviso = 6;
+    else if (totalAnios >= 5) semanasPreaviso = 4;
+    else if (totalAnios >= 2) semanasPreaviso = 2;
+  }
 
   const montoPreaviso = round2(salarioSemanal * semanasPreaviso);
   const total = round2(primaAntiguedad + vacacionesProporcionales + decimoProporcional + montoPreaviso);
 
-  return { primaAntiguedad, vacacionesProporcionales, decimoProporcional, montoPreaviso, semanasPreaviso, total };
+  return { primaAntiguedad, vacacionesProporcionales, decimoProporcional, incluyePreaviso, montoPreaviso, semanasPreaviso, total };
 }
