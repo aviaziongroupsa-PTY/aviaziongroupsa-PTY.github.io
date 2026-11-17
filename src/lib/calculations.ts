@@ -40,7 +40,10 @@ const DESCANSO = 1.5;
 
 export interface OvertimeRow {
   code: string;
+  /** Nombre corto que se lee en la tabla, bajo el título de su grupo. */
   label: string;
+  /** Nombre del concepto tal como sale en planilla; se muestra entre paréntesis y en el resumen. */
+  planilla: string;
   factor: number;
 }
 
@@ -53,38 +56,38 @@ export const OVERTIME_GROUPS: OvertimeGroup[] = [
   {
     title: 'Día Regular — Sin Recargo',
     rows: [
-      { code: 'SDiu', label: 'ST Diurno DiaNor', factor: BASE.diurno },
-      { code: 'SMix', label: 'ST Mixto DiaNor', factor: BASE.mixto },
-      { code: 'SNoc', label: 'ST Nocturno DiaNor', factor: BASE.nocturno },
+      { code: 'SDiu', label: 'Diurno', planilla: 'ST Diurno DiaNor', factor: BASE.diurno },
+      { code: 'SMix', label: 'Mixto', planilla: 'ST Mixto DiaNor', factor: BASE.mixto },
+      { code: 'SNoc', label: 'Nocturno', planilla: 'ST Nocturno DiaNor', factor: BASE.nocturno },
     ],
   },
   {
     title: 'Día Regular — Con Recargo (×1.75)',
     rows: [
-      { code: 'SDiuRc', label: 'ST Diurno DiaNor Rec', factor: BASE.diurno * RECARGO },
-      { code: 'SMixRc', label: 'ST Mixto DiaNor Rec', factor: BASE.mixto * RECARGO },
-      { code: 'SNocRc', label: 'ST Nocturno DiaNor Rec', factor: BASE.nocturno * RECARGO },
+      { code: 'SDiuRc', label: 'Diurno', planilla: 'ST Diurno DiaNor Rec', factor: BASE.diurno * RECARGO },
+      { code: 'SMixRc', label: 'Mixto', planilla: 'ST Mixto DiaNor Rec', factor: BASE.mixto * RECARGO },
+      { code: 'SNocRc', label: 'Nocturno', planilla: 'ST Nocturno DiaNor Rec', factor: BASE.nocturno * RECARGO },
     ],
   },
   {
     title: 'Día de Descanso — Sin Recargo',
     rows: [
-      { code: 'SDiuDom', label: 'ST Diurno DiaDes', factor: BASE.diurno * DESCANSO },
-      { code: 'SMixDom', label: 'ST Mixto DiaDes', factor: BASE.mixto * DESCANSO },
-      { code: 'SNocDom', label: 'ST Nocturno DiaDes', factor: BASE.nocturno * DESCANSO },
+      { code: 'SDiuDom', label: 'Diurno', planilla: 'ST Diurno DiaDes', factor: BASE.diurno * DESCANSO },
+      { code: 'SMixDom', label: 'Mixto', planilla: 'ST Mixto DiaDes', factor: BASE.mixto * DESCANSO },
+      { code: 'SNocDom', label: 'Nocturno', planilla: 'ST Nocturno DiaDes', factor: BASE.nocturno * DESCANSO },
     ],
   },
   {
     title: 'Día de Descanso — Con Recargo (×1.75)',
     rows: [
-      { code: 'SDiuDomRc', label: 'ST Diurno DiaDes Rec', factor: BASE.diurno * DESCANSO * RECARGO },
-      { code: 'SMixDomRc', label: 'ST Mixto DiaDes Rec', factor: BASE.mixto * DESCANSO * RECARGO },
-      { code: 'SNocDomRc', label: 'ST Nocturno DiaDes Rec', factor: BASE.nocturno * DESCANSO * RECARGO },
+      { code: 'SDiuDomRc', label: 'Diurno', planilla: 'ST Diurno DiaDes Rec', factor: BASE.diurno * DESCANSO * RECARGO },
+      { code: 'SMixDomRc', label: 'Mixto', planilla: 'ST Mixto DiaDes Rec', factor: BASE.mixto * DESCANSO * RECARGO },
+      { code: 'SNocDomRc', label: 'Nocturno', planilla: 'ST Nocturno DiaDes Rec', factor: BASE.nocturno * DESCANSO * RECARGO },
     ],
   },
   {
     title: 'Feriado Nacional',
-    rows: [{ code: 'Feriado', label: 'ST Feriado Nacional', factor: 2.5 }],
+    rows: [{ code: 'Feriado', label: 'Feriado nacional', planilla: 'ST Feriado Nacional', factor: 2.5 }],
   },
 ];
 

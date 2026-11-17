@@ -61,7 +61,7 @@ import { OVERTIME_GROUPS, formatFactor } from '../../lib/calculations';
           {group.rows.map((row) => (
             <tr class="hover:bg-[rgba(20,158,201,0.05)]" x-show={`abiertos[${gi}]`} style={gi === 0 ? undefined : 'display:none;'}>
               <td class="px-2 sm:px-3 py-2 text-[var(--color-text)] border-b border-[var(--color-border)]">
-                <label for={`ot-${row.code}`}>{row.label}</label>
+                <label for={`ot-${row.code}`}>{row.label} <span class="block sm:inline text-xs text-[var(--color-muted)]">({row.planilla})</span></label>
                 <span class="sm:hidden block text-xs font-mono text-[var(--color-muted)]">×{formatFactor(row.factor)}</span>
               </td>
               <td class="px-2 sm:px-3 py-2 text-center font-mono text-[var(--color-muted)] border-b border-[var(--color-border)] hidden sm:table-cell">×{formatFactor(row.factor)}</td>
@@ -91,7 +91,7 @@ import { OVERTIME_GROUPS, formatFactor } from '../../lib/calculations';
     <div class="space-y-1 text-sm">
       <template x-for="l in (resultado?.lineas ?? [])" x-bind:key="l.code">
         <div class="flex justify-between gap-4">
-          <span class="text-[var(--color-muted)]" x-text="l.label + ' (' + l.hrs + ' h × ' + factor(l.factor) + '):'"></span>
+          <span class="text-[var(--color-muted)]" x-text="l.planilla + ' (' + l.hrs + ' h × ' + factor(l.factor) + '):'"></span>
           <span class="font-mono whitespace-nowrap text-[var(--color-text)]" x-text="$money(l.monto)"></span>
         </div>
       </template>
