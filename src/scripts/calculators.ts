@@ -4,6 +4,7 @@
 // Este módulo se carga ANTES que el script de Alpine en BaseLayout.astro: Alpine
 // dispara `alpine:init` al arrancar y los componentes deben estar ya registrados.
 import {
+  OVERTIME_GROUPS,
   OVERTIME_ROWS,
   THIRTEENTH_QUOTAS,
   calcLiquidation,
@@ -29,6 +30,11 @@ document.addEventListener('alpine:init', () => {
     horas: Object.fromEntries(OVERTIME_ROWS.map((r) => [r.code, 0])) as Record<string, number | string>,
     resultado: null as ReturnType<typeof calcOvertime> | null,
     error: '',
+    // Grupos de la tabla desplegados: solo el primero abre al cargar.
+    abiertos: OVERTIME_GROUPS.map((_, i) => i === 0),
+    horasEnGrupo(codes: string[]) {
+      return codes.reduce((t, c) => t + toAmount(this.horas[c]), 0);
+    },
     get salarioHora() {
       return hourlyRate(toAmount(this.salario));
     },

@@ -52,6 +52,8 @@ Campos de la calculadora → componente Alpine (`src/scripts/calculators.ts`) �
 - Alpine.js se carga via CDN con SRI (integrity hash) — no instalar el paquete npm
 - En BaseLayout el módulo de calculadoras va ANTES del script de Alpine (escucha `alpine:init`).
 - Cada sección tiene ID de anchor para smooth scroll desde el nav
+- Las calculadoras son un acordeón: todas cerradas al cargar y una abierta a la vez. En Sobretiempos cada grupo de la tabla se despliega por separado (solo el primero abre al cargar) y un grupo cerrado con horas las muestra en su encabezado.
+- Las FAQ 4 y 5 repiten los factores de `OVERTIME_GROUPS`: si cambias un factor, cambia también esas respuestas en content.json.
 - Las URLs de QuickLinks pasan por `safeUrl()`: si no es http(s) con dominio real (p. ej. un marcador `REEMPLAZAR_...`), la tarjeta sale como "Próximamente" sin enlace.
 - Los IDs del FAQ pasan por `safeId()` antes de usarse en expresiones Alpine
 

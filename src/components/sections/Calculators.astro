@@ -4,13 +4,12 @@ import VacationCalc from '../calculators/VacationCalc.astro';
 import ThirteenthCalc from '../calculators/ThirteenthCalc.astro';
 import LiquidationCalc from '../calculators/LiquidationCalc.astro';
 
-const tabs = [
-  { id: 'sobretiempo', label: 'Sobretiempos', Panel: OvertimeCalc },
-  { id: 'vacaciones', label: 'Vacaciones', Panel: VacationCalc },
-  { id: 'decimo', label: 'Décimo Tercer Mes', Panel: ThirteenthCalc },
-  { id: 'liquidacion', label: 'Liquidación', Panel: LiquidationCalc },
+const calcs = [
+  { id: 'sobretiempo', label: 'Sobretiempos', hint: 'Horas extra según jornada, recargo, día de descanso y feriado.', Panel: OvertimeCalc },
+  { id: 'vacaciones', label: 'Vacaciones', hint: 'Días y pago según los meses trabajados.', Panel: VacationCalc },
+  { id: 'decimo', label: 'Décimo Tercer Mes', hint: 'Monto de cada una de las tres cuotas.', Panel: ThirteenthCalc },
+  { id: 'liquidacion', label: 'Liquidación', hint: 'Estimación de prima, vacaciones, décimo y preaviso.', Panel: LiquidationCalc },
 ];
-const tabIds = JSON.stringify(tabs.map((t) => t.id));
 ---
 
 <section id="calculadoras" aria-labelledby="calculadoras-titulo" class="py-24 px-4 md:px-8 bg-[var(--color-bg)]">
@@ -18,66 +17,53 @@ const tabIds = JSON.stringify(tabs.map((t) => t.id));
     <div class="mb-12 text-center">
       <span class="eyebrow">Herramientas</span>
       <h2 id="calculadoras-titulo" class="text-4xl font-bold text-[var(--color-text)] mb-3">Calculadoras laborales</h2>
-      <p class="text-[var(--color-muted)] max-w-[52ch] mx-auto">Cálculos basados en la legislación laboral vigente de Panamá — jornada 6×1 / 208 h mensuales</p>
+      <p class="text-[var(--color-muted)] max-w-[52ch] mx-auto">Cálculos basados en la legislación laboral vigente de Panamá — jornada 6×1 / 208 h mensuales. Abre la que necesites.</p>
     </div>
 
-    {/* Pestañas accesibles: flechas ← → Inicio/Fin mueven la selección (patrón tablist de WAI-ARIA). */}
+    {/* Acordeón: todas cerradas al cargar; se abre una a la vez. Lo escrito en una calculadora
+        se conserva aunque la cierres (x-show solo oculta). */}
     <div
-      x-data={`{
-        tab: 'sobretiempo',
-        ids: ${tabIds},
-        move(step) {
-          const i = (this.ids.indexOf(this.tab) + step + this.ids.length) % this.ids.length;
-          this.go(this.ids[i]);
-        },
-        go(id) {
-          this.tab = id;
-          this.$nextTick(() => document.getElementById('tab-' + id)?.focus());
-        }
-      }`}
-      class="rounded-2xl overflow-hidden bg-[var(--color-surface)] border border-[var(--color-border)]"
+      x-data="{ open: null }"
+      class="rounded-2xl overflow-hidden bg-[var(--color-surface)] border border-[var(--color-border)] divide-y divide-[var(--color-border)]"
     >
-      <div
-        role="tablist"
-        aria-label="Calculadoras"
-        class="flex overflow-x-auto border-b border-[var(--color-border)]"
-        x-on:keydown.right.prevent="move(1)"
-        x-on:keydown.left.prevent="move(-1)"
-        x-on:keydown.home.prevent="go(ids[0])"
-        x-on:keydown.end.prevent="go(ids[ids.length - 1])"
-      >
-        {tabs.map((t, i) => (
-          <button
-            type="button"
-            role="tab"
-            id={`tab-${t.id}`}
-            aria-controls={`panel-${t.id}`}
-            aria-selected={i === 0 ? 'true' : 'false'}
-            tabindex={i === 0 ? 0 : -1}
-            x-bind:aria-selected={`tab === '${t.id}' ? 'true' : 'false'`}
-            x-bind:tabindex={`tab === '${t.id}' ? 0 : -1`}
-            x-on:click={`tab = '${t.id}'`}
-            x-bind:class={`tab === '${t.id}' ? 'border-[var(--color-primary-2)] text-white font-semibold bg-[rgba(20,158,201,0.12)]' : 'border-transparent text-[var(--color-muted)] hover:text-[var(--color-text)]'`}
-            class="px-5 py-4 text-sm whitespace-nowrap transition-colors duration-200 flex-shrink-0 border-b-2 -outline-offset-2"
-          >
-            {t.label}
-          </button>
-        ))}
-      </div>
-
-      <div class="p-4 sm:p-6 md:p-8">
-        {tabs.map((t, i) => (
+      {calcs.map((c) => (
+        <div>
+          <h3>
+            <button
+              type="button"
+              id={`calc-btn-${c.id}`}
+              aria-controls={`calc-panel-${c.id}`}
+              aria-expanded="false"
+              x-bind:aria-expanded={`open === '${c.id}' ? 'true' : 'false'`}
+              x-on:click={`open = open === '${c.id}' ? null : '${c.id}'`}
+              x-bind:class={`open === '${c.id}' ? 'bg-[rgba(20,158,201,0.12)]' : 'hover:bg-[rgba(20,158,201,0.06)]'`}
+              class="group w-full flex items-center gap-4 px-4 sm:px-6 py-4 text-left transition-colors duration-200 -outline-offset-2"
+            >
+              <span class="flex-1 min-w-0">
+                <span class="block font-semibold text-[var(--color-text)] group-hover:text-white">{c.label}</span>
+                <span class="block text-sm text-[var(--color-muted)]">{c.hint}</span>
+              </span>
+              <svg
+                x-bind:class={`open === '${c.id}' ? 'rotate-180' : ''`}
+                class="w-5 h-5 flex-shrink-0 transition-transform duration-200 text-[var(--color-primary-2)]"
+                fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden="true"
+              >
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7" />
+              </svg>
+            </button>
+          </h3>
           <div
-            role="tabpanel"
-            id={`panel-${t.id}`}
-            aria-labelledby={`tab-${t.id}`}
-            x-show={`tab === '${t.id}'`}
-            style={i === 0 ? undefined : 'display:none;'}
+            id={`calc-panel-${c.id}`}
+            role="region"
+            aria-labelledby={`calc-btn-${c.id}`}
+            x-show={`open === '${c.id}'`}
+            class="p-4 sm:p-6 md:p-8 border-t border-[var(--color-border)]"
+            style="display:none;"
           >
-            <t.Panel />
+            <c.Panel />
           </div>
-        ))}
-      </div>
+        </div>
+      ))}
     </div>
   </div>
 </section>

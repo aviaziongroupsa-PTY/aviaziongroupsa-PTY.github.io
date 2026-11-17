@@ -26,13 +26,40 @@ import { OVERTIME_GROUPS, formatFactor } from '../../lib/calculations';
           <th scope="col" class="px-2 sm:px-3 py-2 font-semibold text-[var(--color-text)] border-b border-[var(--color-border)] text-right">Monto</th>
         </tr>
       </thead>
-      {OVERTIME_GROUPS.map((group) => (
+      {/* Cada grupo se despliega por separado; solo el primero abre al cargar. Las horas de un
+          grupo cerrado siguen contando y el encabezado lo avisa. */}
+      {OVERTIME_GROUPS.map((group, gi) => {
+        const codes = JSON.stringify(group.rows.map((r) => r.code));
+        return (
         <tbody>
           <tr>
-            <th scope="colgroup" colspan="4" class="px-2 sm:px-3 py-2 text-left text-xs font-bold uppercase tracking-wide text-[var(--color-text)] bg-[rgba(20,158,201,0.14)]">{group.title}</th>
+            <th scope="colgroup" colspan="4" class="p-0 bg-[rgba(20,158,201,0.14)]">
+              <button
+                type="button"
+                aria-expanded={gi === 0 ? 'true' : 'false'}
+                x-bind:aria-expanded={`abiertos[${gi}] ? 'true' : 'false'`}
+                x-on:click={`abiertos[${gi}] = !abiertos[${gi}]`}
+                class="w-full min-h-11 flex items-center gap-2 px-2 sm:px-3 py-2 text-left text-xs font-bold uppercase tracking-wide text-[var(--color-text)] -outline-offset-2 hover:bg-[rgba(20,158,201,0.10)]"
+              >
+                <svg
+                  x-bind:class={`abiertos[${gi}] ? 'rotate-90' : ''`}
+                  class={`w-4 h-4 flex-shrink-0 transition-transform duration-200 text-[var(--color-primary-2)] ${gi === 0 ? 'rotate-90' : ''}`}
+                  fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden="true"
+                >
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7" />
+                </svg>
+                <span class="flex-1">{group.title}</span>
+                <span
+                  class="normal-case tracking-normal font-medium text-[var(--color-accent-text)]"
+                  x-show={`!abiertos[${gi}] && horasEnGrupo(${codes}) > 0`}
+                  x-text={`horasEnGrupo(${codes}) + ' h'`}
+                  style="display:none;"
+                ></span>
+              </button>
+            </th>
           </tr>
           {group.rows.map((row) => (
-            <tr class="hover:bg-[rgba(20,158,201,0.05)]">
+            <tr class="hover:bg-[rgba(20,158,201,0.05)]" x-show={`abiertos[${gi}]`} style={gi === 0 ? undefined : 'display:none;'}>
               <td class="px-2 sm:px-3 py-2 text-[var(--color-text)] border-b border-[var(--color-border)]">
                 <label for={`ot-${row.code}`}>{row.label}</label>
                 <span class="sm:hidden block text-xs font-mono text-[var(--color-muted)]">×{formatFactor(row.factor)}</span>
@@ -45,7 +72,8 @@ import { OVERTIME_GROUPS, formatFactor } from '../../lib/calculations';
             </tr>
           ))}
         </tbody>
-      ))}
+        );
+      })}
     </table>
   </div>
 
