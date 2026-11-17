@@ -9,19 +9,20 @@ interface Props {
 const { site } = Astro.props;
 ---
 
-<section id="inicio" class="relative text-white overflow-hidden flex flex-col items-center justify-center min-h-dvh bg-[var(--color-bg)]">
+<section id="inicio" class="relative text-white overflow-hidden flex flex-col items-center justify-center bg-[var(--color-bg)]">
   <div class="dot-grid" aria-hidden="true"></div>
   <div class="absolute inset-0 pointer-events-none" style="background: radial-gradient(ellipse 70% 60% at 50% 50%, rgba(20,158,201,0.12) 0%, transparent 70%);" aria-hidden="true"></div>
 
-  <div class="relative w-full max-w-4xl mx-auto px-4 md:px-8 py-28 text-center flex flex-col items-center">
+  <div class="relative w-full max-w-4xl mx-auto px-4 md:px-8 pt-24 pb-10 md:pt-28 md:pb-14 text-center flex flex-col items-center">
+    {/* Portada compacta (media pantalla) para que los accesos rápidos asomen sin deslizar. */}
     {/* Logo oficial en negativo (Kit de marca): sin caja, brillo ni recolor; mínimo 100 px de ancho. */}
-    <img src={site.logoUrl} alt="Aviazion Group" width="2526" height="1325" class="mb-8 w-48 md:w-64 h-auto" />
+    <img src={site.logoUrl} alt="Aviazion Group" width="2526" height="1325" class="mb-5 w-36 md:w-48 h-auto" />
 
-    <span class="eyebrow mb-5">Portal de Recursos Humanos</span>
+    <span class="eyebrow mb-3">Portal de Recursos Humanos</span>
 
-    <h1 class="text-5xl md:text-7xl font-bold leading-[1.05] mb-6">{site.name}</h1>
+    <h1 class="text-4xl md:text-5xl font-bold leading-[1.05] mb-4">{site.name}</h1>
 
-    <p class="text-[var(--color-muted)] text-lg md:text-xl mb-10 max-w-[44ch]">{site.tagline}</p>
+    <p class="text-[var(--color-muted)] text-base md:text-lg mb-6 max-w-[44ch]">{site.tagline}</p>
 
     <div class="flex flex-col sm:flex-row gap-3 justify-center w-full sm:w-auto max-w-xs sm:max-w-none">
       <a href="#accesos" class="btn btn-primary px-8">Ver accesos rápidos</a>
