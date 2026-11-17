@@ -37,16 +37,16 @@ import { THIRTEENTH_QUOTAS } from '../../lib/calculations';
     <div class="space-y-1 text-sm">
       <div class="flex flex-wrap justify-between gap-x-4">
         <span class="text-[var(--color-muted)]">Meses del período:</span>
-        <span class="font-mono font-semibold text-[var(--color-text)]" x-text="(resultado?.meses ?? 0) + ' meses'"></span>
+        <span class="font-mono font-semibold text-[var(--color-text)]" x-text="r.meses + ' meses'"></span>
       </div>
       <div class="flex flex-wrap justify-between gap-x-4">
         <span class="text-[var(--color-muted)]">Acumulado mensual (salario ÷ 12):</span>
-        <span class="font-mono font-semibold text-[var(--color-text)]" x-text="$money(resultado?.decimoMensualAcumulado)"></span>
+        <span class="font-mono font-semibold text-[var(--color-text)]" x-text="$money(r.decimoMensualAcumulado)"></span>
       </div>
     </div>
     <div class="result-divider pt-3 flex flex-wrap justify-between items-center gap-x-4">
       <span class="result-total-label">Monto de la cuota:</span>
-      <span class="result-total text-2xl" x-text="$money(resultado?.montoDecimo)"></span>
+      <span class="result-total text-2xl" x-text="$money(r.montoDecimo)"></span>
     </div>
     <p class="disclaimer">
       <strong>Referencia orientativa.</strong> El valor real estará sujeto al salario efectivamente devengado en el período, incluyendo sobretiempos y recargos.

@@ -28,11 +28,11 @@
     <h3 class="result-title">Resultado</h3>
     <div class="flex flex-wrap justify-between gap-x-4 text-sm">
       <span class="text-[var(--color-muted)]">Días que corresponden:</span>
-      <span class="font-mono font-semibold text-[var(--color-text)]" x-text="(resultado?.diasCorresponden ?? 0) + ' días calendario'"></span>
+      <span class="font-mono font-semibold text-[var(--color-text)]" x-text="r.diasCorresponden + ' días calendario'"></span>
     </div>
     <div class="result-divider pt-3 flex flex-wrap justify-between items-center gap-x-4">
       <span class="result-total-label">Monto estimado:</span>
-      <span class="result-total text-2xl" x-text="$money(resultado?.montoVacaciones)"></span>
+      <span class="result-total text-2xl" x-text="$money(r.montoVacaciones)"></span>
     </div>
     <p class="disclaimer">
       <strong>Referencia orientativa.</strong> El valor real dependerá del salario efectivamente devengado por el empleado, incluyendo sobretiempos y otros ingresos variables del período.

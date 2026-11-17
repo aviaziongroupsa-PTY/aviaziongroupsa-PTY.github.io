@@ -9,7 +9,7 @@ const { email } = Astro.props;
   <div class="max-w-6xl mx-auto px-4 md:px-8">
     <div class="py-8 flex flex-col sm:flex-row items-center justify-between gap-4 text-center">
       <p class="text-xs text-[var(--color-muted)]">
-        © {new Date().getFullYear()} Aviazion Group — Todos los derechos reservados
+        © <span x-data="currentYear" x-text="year">{new Date().getFullYear()}</span> Aviazion Group — Todos los derechos reservados
       </p>
       <a href={`mailto:${email}`} class="text-sm py-2 text-[var(--color-primary-2)] hover:text-white underline underline-offset-4 transition-colors duration-200">{email}</a>
     </div>

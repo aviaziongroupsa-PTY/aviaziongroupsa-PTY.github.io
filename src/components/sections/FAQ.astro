@@ -17,18 +17,18 @@ const safeId = (id: number) => parseInt(String(id), 10) || 0;
       <p class="text-[var(--color-muted)] max-w-[44ch] mx-auto">Respuestas a las dudas más comunes sobre tus derechos laborales.</p>
     </div>
 
-    <div x-data="{ open: null }" class="divide-y divide-[var(--color-border)] border-y border-[var(--color-border)]">
+    <div x-data="accordion" class="divide-y divide-[var(--color-border)] border-y border-[var(--color-border)]">
       {items.map((item, index) => {
         const num = String(index + 1).padStart(2, '0');
         return (
-          <div class="transition-colors duration-200" x-bind:class={`open === ${safeId(item.id)} ? 'bg-[rgba(20,158,201,0.06)]' : ''`}>
+          <div class="transition-colors duration-200" x-bind:class={`isOpen('${safeId(item.id)}') ? 'bg-[rgba(20,158,201,0.06)]' : ''`}>
             <button
               type="button"
               id={`faq-q-${safeId(item.id)}`}
               aria-controls={`faq-a-${safeId(item.id)}`}
               aria-expanded="false"
-              x-bind:aria-expanded={`open === ${safeId(item.id)} ? 'true' : 'false'`}
-              x-on:click={`open = open === ${safeId(item.id)} ? null : ${safeId(item.id)}`}
+              x-bind:aria-expanded={`expanded('${safeId(item.id)}')`}
+              x-on:click={`toggle('${safeId(item.id)}')`}
               class="group w-full flex items-center gap-4 px-4 py-5 text-left transition-colors duration-200 -outline-offset-2"
             >
               <!-- Number -->
@@ -37,7 +37,7 @@ const safeId = (id: number) => parseInt(String(id), 10) || 0;
               <span class="flex-1 font-medium text-[var(--color-text)] group-hover:text-white">{item.question}</span>
               <!-- Icon -->
               <svg
-                x-bind:class={`open === ${safeId(item.id)} ? 'rotate-45' : ''`}
+                x-bind:class={`isOpen('${safeId(item.id)}') ? 'rotate-45' : ''`}
                 class="w-4 h-4 flex-shrink-0 transition-transform duration-200 text-[var(--color-muted)]"
                 fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden="true"
               >
@@ -48,7 +48,7 @@ const safeId = (id: number) => parseInt(String(id), 10) || 0;
               id={`faq-a-${safeId(item.id)}`}
               role="region"
               aria-labelledby={`faq-q-${safeId(item.id)}`}
-              x-show={`open === ${safeId(item.id)}`}
+              x-show={`isOpen('${safeId(item.id)}')`}
               x-transition:enter="transition ease-out duration-200"
               x-transition:enter-start="opacity-0 -translate-y-1"
               x-transition:enter-end="opacity-100 translate-y-0"

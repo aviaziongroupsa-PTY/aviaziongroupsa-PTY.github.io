@@ -60,28 +60,28 @@ import {
   </div>
 
   <div x-show="resultado" x-transition class="result space-y-3" style="display:none;" aria-live="polite">
-    <h3 class="result-title">Desglose de liquidación — <span x-text="resultado?.motivoLabel"></span></h3>
+    <h3 class="result-title">Desglose de liquidación — <span x-text="r.motivoLabel"></span></h3>
     <div class="space-y-2 text-sm">
-      <div class="flex flex-wrap justify-between gap-x-4" x-show="resultado?.indefinido">
+      <div class="flex flex-wrap justify-between gap-x-4" x-show="r.indefinido">
         <span class="text-[var(--color-muted)]">Prima de antigüedad (1 semana por año, proporcional):</span>
-        <span class="font-mono font-semibold text-[var(--color-text)]" x-text="$money(resultado?.primaAntiguedad)"></span>
+        <span class="font-mono font-semibold text-[var(--color-text)]" x-text="$money(r.primaAntiguedad)"></span>
       </div>
-      <div class="flex flex-wrap justify-between gap-x-4" x-show="resultado?.conIndemnizacion" style="display:none;">
+      <div class="flex flex-wrap justify-between gap-x-4" x-show="r.conIndemnizacion" style="display:none;">
         <span class="text-[var(--color-muted)]">Indemnización ({INDEMNITY_WEEKS_FIRST_10_YEARS} semanas por año hasta 10 años; {INDEMNITY_WEEKS_AFTER_10_YEARS} después):</span>
-        <span class="font-mono font-semibold text-[var(--color-text)]" x-text="$money(resultado?.indemnizacion)"></span>
+        <span class="font-mono font-semibold text-[var(--color-text)]" x-text="$money(r.indemnizacion)"></span>
       </div>
       <div class="flex flex-wrap justify-between gap-x-4">
         <span class="text-[var(--color-muted)]">Vacaciones proporcionales:</span>
-        <span class="font-mono font-semibold text-[var(--color-text)]" x-text="$money(resultado?.vacacionesProporcionales)"></span>
+        <span class="font-mono font-semibold text-[var(--color-text)]" x-text="$money(r.vacacionesProporcionales)"></span>
       </div>
       <div class="flex flex-wrap justify-between gap-x-4">
         <span class="text-[var(--color-muted)]">Décimo proporcional:</span>
-        <span class="font-mono font-semibold text-[var(--color-text)]" x-text="$money(resultado?.decimoProporcional)"></span>
+        <span class="font-mono font-semibold text-[var(--color-text)]" x-text="$money(r.decimoProporcional)"></span>
       </div>
     </div>
     <div class="result-divider pt-4 flex flex-wrap justify-between items-center gap-x-4">
       <span class="result-total-label text-lg">Total estimado:</span>
-      <span class="result-total text-3xl" x-text="$money(resultado?.total)"></span>
+      <span class="result-total text-3xl" x-text="$money(r.total)"></span>
     </div>
     <p class="calc-note">
       No incluye salarios pendientes, deducciones (Seguro Social, impuesto sobre la renta), preaviso ni recargos por proceso judicial. La ley calcula la prima y la indemnización sobre promedios de salario (últimos 5 años y últimos 6 meses), por lo que con sobretiempos el monto cambia.

@@ -23,16 +23,70 @@ const SIN_SALARIO = 'Escribe tu salario mensual para calcular.';
 
 const money = formatMoney;
 
+// Valores por defecto que leen las plantillas mientras no hay resultado.
+const SIN_RESULTADO = { lineas: [], salarioHora: 0, meses: 0, diasCorresponden: 0 } as Record<string, any>;
+
 document.addEventListener('alpine:init', () => {
   const Alpine = (window as any).Alpine;
 
   Alpine.magic('money', () => money);
+
+  // Encabezado: fondo al desplazar y menú móvil. Va como componente porque el
+  // build CSP de Alpine no deja leer window desde una expresión.
+  Alpine.data('siteHeader', () => ({
+    scrolled: false,
+    open: false,
+    init() {
+      this.onScroll();
+    },
+    get barClass() {
+      return this.scrolled || this.open
+        ? 'bg-[rgba(0,18,31,0.92)] border-[var(--color-border)] shadow-lg'
+        : 'bg-transparent border-transparent';
+    },
+    get expanded() {
+      return this.open ? 'true' : 'false';
+    },
+    get closed() {
+      return !this.open;
+    },
+    onScroll() {
+      this.scrolled = window.scrollY > 60;
+    },
+    toggle() {
+      this.open = !this.open;
+    },
+    close() {
+      this.open = false;
+    },
+  }));
+
+  // El año del pie se calcula en el navegador; el del build queda de respaldo.
+  Alpine.data('currentYear', () => ({ year: new Date().getFullYear() }));
+
+  // Acordeón de un solo panel abierto (calculadoras y preguntas frecuentes).
+  Alpine.data('accordion', () => ({
+    open: null as string | null,
+    toggle(id: string) {
+      this.open = this.open === id ? null : id;
+    },
+    isOpen(id: string) {
+      return this.open === id;
+    },
+    expanded(id: string) {
+      return this.open === id ? 'true' : 'false';
+    },
+  }));
 
   Alpine.data('overtimeCalc', () => ({
     salario: '',
     horas: Object.fromEntries(OVERTIME_ROWS.map((r) => [r.code, 0])) as Record<string, number | string>,
     resultado: null as ReturnType<typeof calcOvertime> | null,
     error: '',
+    // `r` es el resultado para las plantillas: el build CSP de Alpine no admite `?.` ni `??`.
+    get r() {
+      return this.resultado ?? SIN_RESULTADO;
+    },
     // Al editar un dato, el resultado anterior deja de valer: se borra.
     invalidar() {
       this.resultado = null;
@@ -72,6 +126,10 @@ document.addEventListener('alpine:init', () => {
     meses: 11,
     resultado: null as ReturnType<typeof calcVacation> | null,
     error: '',
+    // `r` es el resultado para las plantillas: el build CSP de Alpine no admite `?.` ni `??`.
+    get r() {
+      return this.resultado ?? SIN_RESULTADO;
+    },
     // Al editar un dato, el resultado anterior deja de valer: se borra.
     invalidar() {
       this.resultado = null;
@@ -94,6 +152,10 @@ document.addEventListener('alpine:init', () => {
     cuota: THIRTEENTH_QUOTAS[0].id as string,
     resultado: null as (ReturnType<typeof calcThirteenth> & { meses: number }) | null,
     error: '',
+    // `r` es el resultado para las plantillas: el build CSP de Alpine no admite `?.` ni `??`.
+    get r() {
+      return this.resultado ?? SIN_RESULTADO;
+    },
     // Al editar un dato, el resultado anterior deja de valer: se borra.
     invalidar() {
       this.resultado = null;
@@ -135,6 +197,10 @@ document.addEventListener('alpine:init', () => {
     motivo: LIQUIDATION_REASONS[0].id as string,
     resultado: null as (ReturnType<typeof calcLiquidation> & { motivoLabel: string; indefinido: boolean; conIndemnizacion: boolean }) | null,
     error: '',
+    // `r` es el resultado para las plantillas: el build CSP de Alpine no admite `?.` ni `??`.
+    get r() {
+      return this.resultado ?? SIN_RESULTADO;
+    },
     // Al editar un dato, el resultado anterior deja de valer: se borra.
     invalidar() {
       this.resultado = null;

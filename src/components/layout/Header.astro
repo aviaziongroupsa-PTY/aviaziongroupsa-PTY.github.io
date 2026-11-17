@@ -12,14 +12,14 @@ const nav = [
 ---
 
 <header
-  x-data="{ scrolled: false, open: false }"
-  x-init="scrolled = window.scrollY > 60; window.addEventListener('scroll', () => { scrolled = window.scrollY > 60 }, { passive: true })"
-  x-on:keydown.escape.window="open = false"
-  x-bind:class="(scrolled || open) ? 'bg-[rgba(0,18,31,0.92)] border-[var(--color-border)] shadow-lg' : 'bg-transparent border-transparent'"
+  x-data="siteHeader"
+  x-on:scroll.window.passive="onScroll"
+  x-on:keydown.escape.window="close"
+  x-bind:class="barClass"
   class="fixed top-0 left-0 right-0 z-50 border-b transition-colors duration-300 backdrop-blur-lg"
 >
   <div class="max-w-6xl mx-auto px-4 md:px-8 h-16 flex items-center justify-between">
-    <a href="#inicio" class="flex items-center gap-3" x-on:click="open = false">
+    <a href="#inicio" class="flex items-center gap-3" x-on:click="close">
       {/* Kit de marca: en espacios pequeños va el símbolo solo; el logo completo exige 100 px de ancho. */}
       <img src={symbol} alt="" width="65" height="24" class="h-6 w-auto" />
       <span class="text-white font-semibold text-sm leading-tight">
@@ -36,15 +36,15 @@ const nav = [
 
     <button
       type="button"
-      x-on:click="open = !open"
-      x-bind:aria-expanded="open ? 'true' : 'false'"
+      x-on:click="toggle"
+      x-bind:aria-expanded="expanded"
       aria-expanded="false"
       aria-controls="menu-movil"
       aria-label="Menú de secciones"
       class="md:hidden text-white p-2.5 -mr-2.5 rounded-lg"
     >
       <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden="true">
-        <path x-show="!open" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16" />
+        <path x-show="closed" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16" />
         <path x-show="open" style="display:none;" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 6l12 12M18 6L6 18" />
       </svg>
     </button>
@@ -59,7 +59,7 @@ const nav = [
     class="md:hidden border-t border-[var(--color-border)] px-4 pb-3"
   >
     {nav.map((item) => (
-      <a href={item.href} x-on:click="open = false" class="block py-3 text-base font-medium text-[var(--color-text)]">{item.label}</a>
+      <a href={item.href} x-on:click="close" class="block py-3 text-base font-medium text-[var(--color-text)]">{item.label}</a>
     ))}
   </nav>
 </header>

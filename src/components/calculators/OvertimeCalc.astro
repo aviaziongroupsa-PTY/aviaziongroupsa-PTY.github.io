@@ -68,7 +68,7 @@ import { OVERTIME_GROUPS, formatFactor } from '../../lib/calculations';
               <td class="px-2 sm:px-3 py-2 border-b border-[var(--color-border)]">
                 <input id={`ot-${row.code}`} x-model={`horas.${row.code}`} type="number" inputmode="decimal" min="0" step="0.5" placeholder="0" class="field field-sm" />
               </td>
-              <td class="px-2 sm:px-3 py-2 text-right font-mono whitespace-nowrap text-[var(--color-text)] border-b border-[var(--color-border)]" x-text={`celda('${row.code}')`}>—</td>
+              <td class="pl-1 pr-2 sm:px-3 py-2 text-right font-mono text-xs sm:text-sm whitespace-nowrap text-[var(--color-text)] border-b border-[var(--color-border)]" x-text={`celda('${row.code}')`}>—</td>
             </tr>
           ))}
         </tbody>
@@ -85,11 +85,11 @@ import { OVERTIME_GROUPS, formatFactor } from '../../lib/calculations';
   <div x-show="resultado" x-transition class="result space-y-3" style="display:none;" aria-live="polite">
     <h3 class="result-title">Resumen de Sobretiempos</h3>
     <p class="text-sm text-[var(--color-muted)]">
-      Salario/hora: <span class="font-mono font-semibold text-[var(--color-text)]" x-text="'B/. ' + (resultado?.salarioHora ?? 0).toFixed(4)"></span>
+      Salario/hora: <span class="font-mono font-semibold text-[var(--color-text)]" x-text="'B/. ' + r.salarioHora.toFixed(4)"></span>
       <span class="text-xs text-[var(--color-accent-text)] font-medium ml-1">(208 h mensuales — jornada 6×1)</span>
     </p>
     <div class="space-y-1 text-sm">
-      <template x-for="l in (resultado?.lineas ?? [])" x-bind:key="l.code">
+      <template x-for="l in r.lineas" x-bind:key="l.code">
         <div class="flex justify-between gap-4">
           <span class="text-[var(--color-muted)]" x-text="l.planilla + ' (' + l.hrs + ' h × ' + factor(l.factor) + '):'"></span>
           <span class="font-mono whitespace-nowrap text-[var(--color-text)]" x-text="$money(l.monto)"></span>
@@ -98,7 +98,7 @@ import { OVERTIME_GROUPS, formatFactor } from '../../lib/calculations';
     </div>
     <div class="result-divider pt-3 flex flex-wrap justify-between items-center gap-x-4">
       <span class="result-total-label">Total sobretiempos:</span>
-      <span class="result-total text-2xl" x-text="$money(resultado?.total)"></span>
+      <span class="result-total text-2xl" x-text="$money(r.total)"></span>
     </div>
     <p class="disclaimer">
       <strong>Referencia orientativa.</strong> Este cálculo tiene como objetivo brindar una referencia de cómo se obtienen los montos, pero el valor real siempre estará sujeto a la realidad particular de cada empleado.

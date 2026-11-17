@@ -1,4 +1,7 @@
 ---
+// Fuentes alojadas en el propio sitio (sin orígenes externos en la CSP).
+import '@fontsource-variable/space-grotesk';
+import '@fontsource-variable/jetbrains-mono';
 import '../../styles/globals.css';
 
 interface Props {
@@ -25,19 +28,15 @@ const { title, description } = Astro.props;
     <meta property="og:type" content="website" />
     <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
     <title>{title}</title>
-    {/* CSP por meta (GitHub Pages no permite cabeceras). 'unsafe-eval' lo exige Alpine v3.
-        No hay 'unsafe-inline' en script-src: no uses onclick/onmouseover ni <script> en línea. */}
+    {/* CSP por meta (GitHub Pages no permite cabeceras).
+        Sin 'unsafe-eval': se usa el build CSP de Alpine (@alpinejs/csp), que interpreta las
+        expresiones sin new Function. Sin 'unsafe-inline' en script-src: no uses onclick/onmouseover
+        ni <script> en línea. Fuentes y estilos salen del propio sitio. */}
     <meta
       http-equiv="Content-Security-Policy"
-      content="default-src 'none'; script-src 'self' 'unsafe-eval' https://cdn.jsdelivr.net; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; font-src 'self' https://fonts.gstatic.com; img-src 'self' data:; connect-src 'none'; base-uri 'self'; form-action 'none';"
+      content="default-src 'none'; script-src 'self' https://cdn.jsdelivr.net; style-src 'self' 'unsafe-inline'; font-src 'self'; img-src 'self' data:; connect-src 'none'; base-uri 'self'; form-action 'none';"
     />
     <meta name="referrer" content="strict-origin-when-cross-origin" />
-    <link rel="preconnect" href="https://fonts.googleapis.com" />
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-    <link
-      rel="stylesheet"
-      href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;600;700&family=Space+Grotesk:wght@400;500;600;700&display=swap"
-    />
     {/* Orden obligatorio: primero el módulo que registra las calculadoras (escucha alpine:init),
         después Alpine. Ambos son diferidos y se ejecutan en el orden del documento. */}
     <script>
@@ -46,8 +45,8 @@ const { title, description } = Astro.props;
     <script
       is:inline
       defer
-      src="https://cdn.jsdelivr.net/npm/alpinejs@3.14.9/dist/cdn.min.js"
-      integrity="sha384-9Ax3MmS9AClxJyd5/zafcXXjxmwFhZCdsT6HJoJjarvCaAkJlk5QDzjLJm+Wdx5F"
+      src="https://cdn.jsdelivr.net/npm/@alpinejs/csp@3.17.5/dist/cdn.min.js"
+      integrity="sha384-Q4UOujiwqAb/jTt3ki4pdkETk4I3rIFQX8h271PLI41okj/YIKY7IQQFMw73wkrX"
       crossorigin="anonymous"
     ></script>
   </head>
