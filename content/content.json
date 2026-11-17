@@ -75,12 +75,12 @@
     {
       "id": 4,
       "question": "¿Cuál es el recargo por horas extras y por trabajo en día de descanso?",
-      "answer": "Según la Ley 44 de 1995 (Art. 26), las horas extras diurnas se pagan al 125% de la hora regular y las nocturnas al 150%. El trabajo en días feriados o en tu día de descanso obligatorio se paga al 200% de la hora regular."
+      "answer": "Según la Ley 44 de 1995 (Art. 26), la hora extra se paga sobre tu hora regular (salario mensual ÷ 208) según la jornada: diurna ×1.25, mixta ×1.50 y nocturna ×1.75. Si la trabajas en tu día de descanso, ese factor se multiplica además por 1.50 (diurna ×1.875, mixta ×2.25, nocturna ×2.625). En feriado nacional la hora se paga a ×2.50. Puedes ver el detalle en la calculadora de Sobretiempos."
     },
     {
       "id": 5,
       "question": "¿Cuándo aplica el recargo en las horas extras?",
-      "answer": "Según la Ley 44 de 1995 (Art. 26), el recargo de sobretiempo (×1.75 sobre el factor base) aplica a partir de la 3.ª hora diaria de sobretiempo O desde la 9.ª hora semanal acumulada, lo que ocurra primero. Por ejemplo, si trabajas 2 horas extra un día y 1 hora extra al día siguiente, esa hora del segundo día ya lleva recargo porque supera las 9 horas semanales."
+      "answer": "Según la Ley 44 de 1995 (Art. 26), el recargo multiplica por 1.75 el factor de la hora extra y aplica desde la 3.ª hora diaria de sobretiempo o desde la 9.ª hora semanal acumulada, lo que ocurra primero. Por ejemplo, si un día haces 4 horas extra diurnas, las 2 primeras se pagan a ×1.25 y la 3.ª y la 4.ª a ×2.1875 (1.25 × 1.75)."
     },
     {
       "id": 6,
