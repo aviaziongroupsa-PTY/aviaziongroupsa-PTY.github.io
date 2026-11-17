@@ -10,6 +10,8 @@ interface Props {
 }
 
 const { title, description } = Astro.props;
+const canonical = new URL(Astro.url.pathname, Astro.site).href;
+const ogImage = new URL('/og-portal.jpg', Astro.site).href;
 ---
 
 <!DOCTYPE html>
@@ -26,6 +28,16 @@ const { title, description } = Astro.props;
     <meta property="og:title" content={title} />
     <meta property="og:description" content={description} />
     <meta property="og:type" content="website" />
+    {/* Vista previa al compartir el enlace (WhatsApp, Teams). La imagen se genera con
+        scripts/generar-og.py: logo oficial y todo el contenido dentro del cuadrado central,
+        que es lo que WhatsApp muestra. */}
+    <meta property="og:url" content={canonical} />
+    <meta property="og:locale" content="es_PA" />
+    <meta property="og:image" content={ogImage} />
+    <meta property="og:image:width" content="1200" />
+    <meta property="og:image:height" content="630" />
+    <meta property="og:image:alt" content="Portal RRHH Aviazion Group" />
+    <meta name="twitter:card" content="summary_large_image" />
     <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
     <title>{title}</title>
     {/* CSP por meta (GitHub Pages no permite cabeceras).

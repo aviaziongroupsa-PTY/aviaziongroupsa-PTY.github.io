@@ -39,7 +39,8 @@ Nunca usar 240 (que corresponde a jornada fija de 30 días). Si ves 240 en calcu
 - `src/styles/globals.css` — Tokens de color (`@theme`) y clases de componente (`.btn`, `.field`, `.result`, `.disclaimer`, `.calc-note`).
 - `src/pages/index.astro` — Página única que ensambla todas las secciones
 - `content/content.json` — Fuente de verdad del contenido: links y FAQs
-- `public/` — Logos oficiales del kit de marca (negativo y símbolo blanco) y favicon
+- `public/` — Logos oficiales del kit de marca (negativo y símbolo blanco), favicon y `og-portal.jpg` (imagen para compartir el enlace)
+- `scripts/generar-og.py` — Genera `public/og-portal.jpg` con Pillow a partir del logo oficial (`scripts/logo-aviazion-negativo-1024.png`) y Century Gothic Bold. Todo el contenido va en el cuadrado central de 630 px, que es lo que WhatsApp muestra. No generes esta imagen con Canva: redibuja el logo.
 - `.github/workflows/deploy.yml` — Pruebas + build + deploy a GitHub Pages (SHAs fijos)
 
 ### Data Flow
