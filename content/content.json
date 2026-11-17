@@ -46,14 +46,6 @@
       "icon": "wrench",
       "url": "https://aviaziongrouptools.zohocreatorportal.com/",
       "category": "Operaciones"
-    },
-    {
-      "id": "proveedores",
-      "title": "Carga de Facturas",
-      "description": "Portal de proveedores — envío de facturas para pago",
-      "icon": "handshake",
-      "url": "https://REEMPLAZAR_CON_LINK_REAL",
-      "category": "Proveedores"
     }
   ],
   "faq": [
@@ -91,11 +83,6 @@
       "id": 7,
       "question": "¿Cómo envío mi hoja de vida?",
       "answer": "Usa el formulario 'Únete a Aviazion Group' en la sección de Accesos Rápidos. Adjunta tu CV en formato PDF. Nuestro equipo de RRHH revisará tu perfil y te contactará si hay una posición disponible."
-    },
-    {
-      "id": 8,
-      "question": "¿Cómo envío una factura como proveedor?",
-      "answer": "Usa el formulario 'Carga de Facturas' en la sección de Accesos Rápidos. Adjunta tu factura en PDF con el número de orden de compra correspondiente. Para consultas sobre pagos, escribe a admon@aviaziongroup.com."
     }
   ]
 }
