@@ -8,7 +8,10 @@
    sin volver a medirlo contra --color-bg y --color-surface (mínimo 4.5:1).
    ============================================================ */
 @theme {
-  --font-sans: 'Space Grotesk Variable', 'Space Grotesk', ui-sans-serif, system-ui, 'Segoe UI', Arial, sans-serif;
+  /* Tipografía oficial del Kit de Marca: Century Gothic, con Arial de respaldo (decisión del kit).
+     Century Gothic es de pago: no se sirve desde el sitio; se usa la instalada en el equipo
+     (Windows con Office la trae). Donde no está (casi todos los teléfonos) sale Arial. */
+  --font-sans: 'Century Gothic', CenturyGothic, AppleGothic, Arial, 'Helvetica Neue', Helvetica, sans-serif;
   --font-mono: 'JetBrains Mono Variable', 'JetBrains Mono', ui-monospace, 'Cascadia Mono', Consolas, monospace;
 
   --color-primary: #004C80;        /* Navy: botones */

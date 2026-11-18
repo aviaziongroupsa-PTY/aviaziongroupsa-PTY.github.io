@@ -64,7 +64,7 @@ Campos de la calculadora → componente Alpine (`src/scripts/calculators.ts`) �
 
 ### Content Security Policy (meta tag en BaseLayout.astro)
 - `script-src 'self' https://cdn.jsdelivr.net`, **sin `'unsafe-eval'`** (build CSP de Alpine) y sin `'unsafe-inline'`: los atributos `onclick`/`onmouseover` y los `<script>` en línea se bloquean. Usa CSS (`:hover`) o directivas Alpine. `astro.config.mjs` fija `assetsInlineLimit: 0` para que los scripts salgan siempre como archivo.
-- Fuentes alojadas en el propio sitio (`@fontsource-variable`): la CSP no admite orígenes externos de estilos ni fuentes.
+- Fuentes: JetBrains Mono alojada en el propio sitio (`@fontsource-variable`); Century Gothic se toma del equipo (`local`, sin archivo). La CSP no admite orígenes externos de estilos ni fuentes.
 - GitHub Pages no permite cabeceras HTTP: `frame-ancestors` y `Permissions-Policy` no se pueden aplicar por `<meta>`.
 
 ### Alpine.js CDN con SRI
@@ -94,8 +94,8 @@ Tema oscuro único. Fuente de verdad de marca: Kit de Marca de Aviazion Group v1
 - `public/logo-aviazion-negativo.svg` (hero) y `public/logo-aviazion-simbolo-blanco.svg` (encabezado, favicon): archivos oficiales del kit. No estirar, recolorear, ponerle caja ni brillo; logo completo ≥ 100 px de ancho.
 
 ### Typography
-- Space Grotesk (texto y títulos) y JetBrains Mono (montos), alojadas en el sitio con `@fontsource-variable`.
-- La tipografía oficial de la marca es Century Gothic (de pago, no se puede servir en web). Adoptarla o elegir un sustituto es una decisión pendiente de Josué.
+- Texto y títulos: **Century Gothic**, la oficial del Kit de Marca, con **Arial** de respaldo (lo que fija el kit). Es de pago: no se sirve desde el sitio, se usa la instalada en el equipo (Windows con Office); en teléfonos sale Arial. No vuelvas a una fuente web sin decisión de Josué.
+- Montos: JetBrains Mono, alojada en el sitio con `@fontsource-variable`.
 
 ## Ley Laboral Panameña (referencia)
 
@@ -109,7 +109,7 @@ Tema oscuro único. Fuente de verdad de marca: Kit de Marca de Aviazion Group v1
 1. **BASE 208H: nunca 240.** salarioMensual/208 en todos los cálculos.
 2. **content.json como única fuente de verdad de links y FAQs.**
 3. **Mobile-first sin excepciones.** Verificar a 360 px sin desborde horizontal y con objetivos táctiles ≥ 44 px.
-4. **Sin dependencias innecesarias.** El proyecto tiene 5 dependencias npm (Astro, Tailwind y su plugin, y las dos fuentes); las pruebas usan `node --test`.
+4. **Sin dependencias innecesarias.** El proyecto tiene 4 dependencias npm (Astro, Tailwind y su plugin, y JetBrains Mono); las pruebas usan `node --test`.
 5. **Alpine.js solo via CDN con SRI.** Nunca instalar como paquete npm.
 6. **SHAs fijos en GitHub Actions.** Nunca usar tags mutables.
 7. **Una sola implementación de cada fórmula** (calculations.ts) y `npm test` en verde antes de fusionar.
