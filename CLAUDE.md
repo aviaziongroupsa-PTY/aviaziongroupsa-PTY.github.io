@@ -40,7 +40,7 @@ Nunca usar 240 (que corresponde a jornada fija de 30 días). Si ves 240 en calcu
 - `src/pages/index.astro` — Página única que ensambla todas las secciones
 - `content/content.json` — Fuente de verdad del contenido: links y FAQs
 - `public/` — Logos oficiales del kit de marca (negativo y símbolo blanco), favicon y `og-portal.jpg` (imagen para compartir el enlace)
-- `scripts/generar-og.py` — Genera `public/og-portal.jpg` con Pillow a partir del logo oficial (`scripts/logo-aviazion-negativo-1024.png`) y Century Gothic Bold. Todo el contenido va en el cuadrado central de 630 px, que es lo que WhatsApp muestra. No generes esta imagen con Canva: redibuja el logo.
+- `scripts/generar-og.py` — Genera `public/og-portal.jpg` con Pillow a partir del logo oficial (`scripts/logo-aviazion-negativo-1024.png`) y Century Gothic Bold. Todo el contenido va en el cuadrado central de 630 px, que es lo que WhatsApp muestra. No generes esta imagen con Canva: redibuja el logo. La versión editable vive en Canva (carpeta Aviazion Group › Portal RRHH, diseño `DAHbSPQAS1A`) y se regenera con `scripts/generar-og-editable.py` (PPTX por capas que se importa con Subir archivos); si cambias una medida, cámbiala en los dos scripts.
 - `.github/workflows/deploy.yml` — Pruebas + build + deploy a GitHub Pages (SHAs fijos)
 
 ### Data Flow
